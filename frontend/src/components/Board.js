@@ -3,8 +3,9 @@ import Pawn from "./Pawn";
 import Wall from "./Wall";
 import PawnShadow from "./PawnShadow";
 import log from "../logger";
+import WallShadow from "./WallShadow";
 
-const BOARD_SIZE = 19; //19;
+const BOARD_SIZE = 17;
 const TILE_COLOR = "bg-orange-300";
 const RECTANGLE_GAP_COLOR = "bg-orange-900";
 const SQUARE_GAP_COLOR = "bg-orange-900";
@@ -21,7 +22,15 @@ const Board = () => {
 		for (let i = 0; i < BOARD_SIZE; i++) {
 			initialBoard.push(new Array(BOARD_SIZE).fill(0));
 		}
+		initialBoard[2][2] = 2;
+
 		initialBoard[1][3] = 2;
+		initialBoard[1][4] = 2;
+		initialBoard[1][5] = 2;
+
+		initialBoard[3][3] = 1;
+		initialBoard[3][4] = 1;
+		initialBoard[3][5] = 1;
 		return initialBoard;
 	});
 
@@ -29,9 +38,9 @@ const Board = () => {
 
 	/* Tile, Rectangular_gap, Square_gap */
 	const typeOfTile = (rowIndex, colIndex) => {
-		return rowIndex % 2 === 0 && colIndex % 2 === 0
+		return rowIndex % 2 === 1 && colIndex % 2 === 1
 			? "SQUARE_GAP"
-			: rowIndex % 2 !== 0 && colIndex % 2 !== 0
+			: rowIndex % 2 !== 1 && colIndex % 2 !== 1
 			? "TILE"
 			: "RECTANGLE_GAP";
 	};
@@ -108,7 +117,7 @@ const Board = () => {
 		setPawnShadowToPawnMap({});
 	};
 
-	const renderTile = (rowIndex, colIndex, cell) => {
+	const renderCellContent = (rowIndex, colIndex, cell) => {
 		switch (typeOfTile(rowIndex, colIndex)) {
 			case "TILE":
 				if (cell === 2) {
@@ -132,13 +141,52 @@ const Board = () => {
 				}
 				break;
 			case "RECTANGLE_GAP":
-				if (rowIndex === 4 && colIndex === 5) {
-					return <Wall orientation="horizontal" />;
+				if (cell === 2) {
+					return <Wall />;
+				} else if (cell === 1) {
+					return <WallShadow />;
+				}
+
+				break;
+			case "SQUARE_GAP":
+				if (cell === 2) {
+					return <Wall />;
+				} else if (cell === 1) {
+					return <WallShadow />;
 				}
 				break;
 			default:
 				break;
 		}
+	};
+
+	const renderTiles = (rowIndex, colIndex, cell) => {
+		return (
+			<div key={colIndex} className={` ${TILE_COLOR} w-10 h-10`}>
+				{renderCellContent(rowIndex, colIndex, cell)}
+			</div>
+		);
+	};
+
+	const renderRectangularGaps = (rowIndex, colIndex, cell) => {
+		return (
+			<div
+				key={colIndex}
+				className={` ${RECTANGLE_GAP_COLOR} ${
+					rowIndex % 2 === 1 ? "h-2" : "h-10"
+				} ${colIndex % 2 === 1 ? "w-2" : "w-10"}`}
+			>
+				{renderCellContent(rowIndex, colIndex, cell)}
+			</div>
+		);
+	};
+
+	const renderSquareGaps = (rowIndex, colIndex, cell) => {
+		return (
+			<div key={colIndex} className={` ${SQUARE_GAP_COLOR} w-2 h-2`}>
+				{renderCellContent(rowIndex, colIndex, cell)}
+			</div>
+		);
 	};
 
 	const renderVerticalLabels = (rowIndex) => {
@@ -148,7 +196,7 @@ const Board = () => {
 		return (
 			<div
 				className={`border bg-white w-10 ${
-					rowIndex % 2 === 0 ? "h-2" : "h-10"
+					rowIndex % 2 === 1 ? "h-2" : "h-10"
 				} flex justify-center items-center`}
 			>
 				{labels[rowIndex]}
@@ -164,7 +212,7 @@ const Board = () => {
 					<div
 						key={colIndex}
 						className={`border bg-white h-10 ${
-							colIndex % 2 === 0 ? "w-2" : "w-10"
+							colIndex % 2 === 1 ? "w-2" : "w-10"
 						} flex justify-center items-center`}
 					>
 						{colIndex + 1}
@@ -173,30 +221,40 @@ const Board = () => {
 			</div>
 		);
 	};
+
 	const renderBoard = () => {
 		return (
 			<div className="flex justify-center items-center h-screen">
-				<div>
+				<div
+					className={`border-[40px] border-orange-900 rounded-[30px]`}
+				>
 					{board.map((row, rowIndex) => (
 						<div key={rowIndex} className="flex">
 							{renderVerticalLabels(rowIndex)}
-							{row.map((cell, colIndex) => (
-								<div
-									key={colIndex}
-									className={` ${
-										rowIndex % 2 === 0 && colIndex % 2 === 0
-											? SQUARE_GAP_COLOR
-											: rowIndex % 2 !== 0 &&
-											  colIndex % 2 !== 0
-											? TILE_COLOR
-											: RECTANGLE_GAP_COLOR
-									} ${rowIndex % 2 === 0 ? "h-2" : "h-10"} ${
-										colIndex % 2 === 0 ? "w-2" : "w-10"
-									}`}
-								>
-									{renderTile(rowIndex, colIndex, cell)}
-								</div>
-							))}
+							{row.map((cellValue, colIndex) => {
+								if (rowIndex % 2 === 0 && colIndex % 2 === 0) {
+									return renderTiles(
+										rowIndex,
+										colIndex,
+										cellValue
+									);
+								} else if (
+									rowIndex % 2 === 1 &&
+									colIndex % 2 === 1
+								) {
+									return renderSquareGaps(
+										rowIndex,
+										colIndex,
+										cellValue
+									);
+								} else {
+									return renderRectangularGaps(
+										rowIndex,
+										colIndex,
+										cellValue
+									);
+								}
+							})}
 						</div>
 					))}
 					{renderHorizontalLabels()}
