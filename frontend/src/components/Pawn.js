@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 const PAWN_COLOR_WHITE = "bg-white";
-const PAWN_COLOR_BLACK = "bg-black";
+//const PAWN_COLOR_BLACK = "bg-black";
 
 const Pawn = ({ onPawnClick, rowIndex, colIndex }) => {
 	const [isClicked, setIsClicked] = useState(false);

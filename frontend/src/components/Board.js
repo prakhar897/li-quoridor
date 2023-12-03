@@ -17,8 +17,8 @@ const Board = () => {
 		 if its a gap: 0 = empty, 1: shadow-wall, 2: your-wall, 3: opposite-wall
 	*/
 	const [board, setBoard] = useState(() => {
+		let initialBoard = [];
 		// Initialize the board with 0s for empty spaces
-		const initialBoard = [];
 		for (let i = 0; i < BOARD_SIZE; i++) {
 			initialBoard.push(new Array(BOARD_SIZE).fill(0));
 		}
