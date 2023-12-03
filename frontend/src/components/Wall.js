@@ -1,9 +1,9 @@
 import React from "react";
 
-const WALL_COLOR = "stone-600";
+const BG_WALL_COLOR = "bg-black";
 
 const Wall = () => {
-	return <div className={`bg-${WALL_COLOR} w-full h-full`}></div>;
+	return <div className={`${BG_WALL_COLOR} w-full h-full`}></div>;
 };
 
 export default Wall;

@@ -1,7 +1,10 @@
 // Pawn.js
 import React, { useState } from "react";
 
-const Pawn = ({ color, onPawnClick, rowIndex, colIndex }) => {
+const PAWN_COLOR_WHITE = "bg-white";
+const PAWN_COLOR_BLACK = "bg-black";
+
+const Pawn = ({ onPawnClick, rowIndex, colIndex }) => {
 	const [isClicked, setIsClicked] = useState(false);
 
 	const handlePawnClick = () => {
@@ -9,12 +12,10 @@ const Pawn = ({ color, onPawnClick, rowIndex, colIndex }) => {
 		onPawnClick && onPawnClick(rowIndex, colIndex, isClicked); // Pass rowIndex and colIndex to the Board component
 	};
 
-	const pawnColor = color;
-
 	return (
 		<div
-			className={`w-9 h-9 mx-auto rounded-full border-2 border-gray-800 ${pawnColor} ${
-				isClicked ? "opacity-50" : ""
+			className={`w-9 h-9 mx-auto rounded-full border-2 border-black ${PAWN_COLOR_WHITE} ${
+				isClicked ? "opacity-50" : "opacity-100"
 			}`}
 			onClick={handlePawnClick}
 		></div>

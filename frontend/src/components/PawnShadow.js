@@ -1,7 +1,7 @@
 // Pawn.js
 import React, { useState } from "react";
 
-const pawnShadowColor = "bg-gray-300";
+const pawnShadowColor = "bg-white";
 
 const PawnShadow = ({ onPawnShadowClick, rowIndex, colIndex }) => {
 	const [isClicked, setIsClicked] = useState(false);
@@ -13,7 +13,7 @@ const PawnShadow = ({ onPawnShadowClick, rowIndex, colIndex }) => {
 
 	return (
 		<div
-			className={`w-9 h-9 mx-auto rounded-full border-2 border-gray-800 ${pawnShadowColor} opacity-30`}
+			className={`w-9 h-9 mx-auto rounded-full border-2 border-black ${pawnShadowColor} opacity-100`}
 			onClick={handlePawnShadowClick}
 		></div>
 	);

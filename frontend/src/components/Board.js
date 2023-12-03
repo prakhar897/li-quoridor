@@ -6,8 +6,9 @@ import log from "../logger";
 import WallShadow from "./WallShadow";
 
 const BOARD_SIZE = 17;
-const TILE_COLOR = "stone-800";
-const GAP_COLOR = "stone-400";
+
+const BG_GAP_COLOR = "bg-stone-400";
+const BG_TILE_COLOR = "bg-stone-800";
 
 const Board = () => {
 	/*
@@ -226,7 +227,6 @@ const Board = () => {
 				if (cell === 2) {
 					return (
 						<Pawn
-							color="bg-blue-100"
 							rowIndex={rowIndex}
 							colIndex={colIndex}
 							onPawnClick={handlePawnClick}
@@ -235,7 +235,6 @@ const Board = () => {
 				} else if (cell === 1) {
 					return (
 						<PawnShadow
-							color="bg-blue-100"
 							rowIndex={rowIndex}
 							colIndex={colIndex}
 							onPawnShadowClick={handlePawnShadowClick}
@@ -267,7 +266,7 @@ const Board = () => {
 		return (
 			<div
 				key={colIndex}
-				className={` bg-${TILE_COLOR} w-10 h-10 opacity-30`}
+				className={` ${BG_TILE_COLOR} w-10 h-10 opacity-30`}
 			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
@@ -281,7 +280,7 @@ const Board = () => {
 				onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
 				onMouseLeave={() => handleMouseLeave(rowIndex, colIndex)}
 				onClick={() => handleGapClick(rowIndex, colIndex)}
-				className={` bg-${GAP_COLOR} ${
+				className={` ${BG_GAP_COLOR} ${
 					rowIndex % 2 === 1 ? "h-2" : "h-10"
 				} ${colIndex % 2 === 1 ? "w-2" : "w-10"} `}
 			>
@@ -297,7 +296,7 @@ const Board = () => {
 				onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
 				onMouseLeave={() => handleMouseLeave(rowIndex, colIndex)}
 				onClick={() => handleGapClick(rowIndex, colIndex)}
-				className={` bg-${GAP_COLOR} w-2 h-2`}
+				className={` ${BG_GAP_COLOR} w-2 h-2`}
 			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
@@ -311,7 +310,7 @@ const Board = () => {
 
 		return (
 			<div
-				className={` bg-${GAP_COLOR} w-10 ${
+				className={` ${BG_GAP_COLOR} w-10 ${
 					rowIndex % 2 === 1 ? "h-2" : "h-10"
 				} flex justify-center items-center`}
 			>
@@ -330,7 +329,7 @@ const Board = () => {
 				{board[0].map((cell, colIndex) => (
 					<div
 						key={colIndex}
-						className={` bg-${GAP_COLOR} h-10 ${
+						className={` ${BG_GAP_COLOR} h-10 ${
 							colIndex % 2 === 1 ? "w-2" : "w-10"
 						} flex justify-center items-center`}
 					>
@@ -345,7 +344,7 @@ const Board = () => {
 		return (
 			<div className="flex justify-center items-center h-screen">
 				<div
-					className={`border-l-[20px] border-b-[20px] border-[40px]  border-${GAP_COLOR} bg-${GAP_COLOR} rounded-[30px]`}
+					className={`pl-2.5 pb-2.5 pt-5 pr-5  ${BG_GAP_COLOR} rounded-[30px]`}
 				>
 					{board.map((row, rowIndex) => (
 						<div key={rowIndex} className="flex">
