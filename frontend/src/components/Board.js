@@ -36,13 +36,117 @@ const Board = () => {
 
 	const [pawnShadowToPawnMap, setPawnShadowToPawnMap] = useState({});
 
+	const handleMouseEnter = (rowIndex, colIndex) => {
+		wallLogic(rowIndex, colIndex, "ADD_WALL_SHADOW");
+	};
+
+	const handleGapClick = (rowIndex, colIndex) => {
+		wallLogic(rowIndex, colIndex, "ADD_WALL");
+	};
+
+	const wallLogic = (rowIndex, colIndex, action) => {
+		let actionValue;
+
+		if (action === "ADD_WALL_SHADOW") {
+			actionValue = 1;
+		} else if (action === "REMOVE_WALL_SHADOW") {
+			actionValue = 0;
+		} else if (action === "ADD_WALL") {
+			actionValue = 2;
+		} else {
+			actionValue = -1;
+		}
+
+		if (typeOfCell(rowIndex, colIndex) === "RECTANGLE_GAP") {
+			if (typeOfRectangularCell(rowIndex, colIndex) === "VERTICAL") {
+				if (rowIndex === BOARD_SIZE - 1) {
+					updateBoard(
+						[
+							[rowIndex, colIndex],
+							[rowIndex - 1, colIndex],
+							[rowIndex - 2, colIndex],
+						],
+						actionValue
+					);
+				} else {
+					updateBoard(
+						[
+							[rowIndex, colIndex],
+							[rowIndex + 1, colIndex],
+							[rowIndex + 2, colIndex],
+						],
+						actionValue
+					);
+				}
+			} else {
+				if (colIndex === BOARD_SIZE - 1) {
+					updateBoard(
+						[
+							[rowIndex, colIndex],
+							[rowIndex, colIndex - 1],
+							[rowIndex, colIndex - 2],
+						],
+						actionValue
+					);
+				} else {
+					updateBoard(
+						[
+							[rowIndex, colIndex],
+							[rowIndex, colIndex + 1],
+							[rowIndex, colIndex + 2],
+						],
+						actionValue
+					);
+				}
+			}
+		} else if (typeOfCell(rowIndex, colIndex) === "SQUARE_GAP") {
+			updateBoard(
+				[
+					[rowIndex, colIndex - 1],
+					[rowIndex, colIndex],
+					[rowIndex, colIndex + 1],
+				],
+				actionValue
+			);
+		}
+	};
+	const updateBoard = (coords, value) => {
+		console.log(coords);
+
+		for (let coord in coords) {
+			const [rowIndex, colIndex] = coords[coord];
+			if (
+				board[rowIndex][colIndex] === 2 ||
+				board[rowIndex][colIndex] === 3
+			) {
+				return;
+			}
+		}
+		for (let coord in coords) {
+			const [rowIndex, colIndex] = coords[coord];
+			const newBoard = [...board];
+			newBoard[rowIndex][colIndex] = value;
+			setBoard(newBoard);
+		}
+	};
+
+	const handleMouseLeave = (rowIndex, colIndex) => {
+		wallLogic(rowIndex, colIndex, "REMOVE_WALL_SHADOW");
+	};
+
 	/* Tile, Rectangular_gap, Square_gap */
-	const typeOfTile = (rowIndex, colIndex) => {
+	const typeOfCell = (rowIndex, colIndex) => {
 		return rowIndex % 2 === 1 && colIndex % 2 === 1
 			? "SQUARE_GAP"
 			: rowIndex % 2 !== 1 && colIndex % 2 !== 1
 			? "TILE"
 			: "RECTANGLE_GAP";
+	};
+
+	const typeOfRectangularCell = (rowIndex, colIndex) => {
+		return rowIndex % 2 === 1 && colIndex % 2 === 0
+			? "HORIZONTAL"
+			: "VERTICAL";
 	};
 	const updateAdjacentPawnShadows = (rowIndex, colIndex, action) => {
 		const adjacentList = [
@@ -118,7 +222,7 @@ const Board = () => {
 	};
 
 	const renderCellContent = (rowIndex, colIndex, cell) => {
-		switch (typeOfTile(rowIndex, colIndex)) {
+		switch (typeOfCell(rowIndex, colIndex)) {
 			case "TILE":
 				if (cell === 2) {
 					return (
@@ -172,9 +276,12 @@ const Board = () => {
 		return (
 			<div
 				key={colIndex}
+				onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+				onMouseLeave={() => handleMouseLeave(rowIndex, colIndex)}
+				onClick={() => handleGapClick(rowIndex, colIndex)}
 				className={` ${RECTANGLE_GAP_COLOR} ${
 					rowIndex % 2 === 1 ? "h-2" : "h-10"
-				} ${colIndex % 2 === 1 ? "w-2" : "w-10"}`}
+				} ${colIndex % 2 === 1 ? "w-2" : "w-10"} `}
 			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
@@ -183,7 +290,13 @@ const Board = () => {
 
 	const renderSquareGaps = (rowIndex, colIndex, cell) => {
 		return (
-			<div key={colIndex} className={` ${SQUARE_GAP_COLOR} w-2 h-2`}>
+			<div
+				key={colIndex}
+				onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+				onMouseLeave={() => handleMouseLeave(rowIndex, colIndex)}
+				onClick={() => handleGapClick(rowIndex, colIndex)}
+				className={` ${SQUARE_GAP_COLOR} w-2 h-2`}
+			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
 		);
