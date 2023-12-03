@@ -6,9 +6,8 @@ import log from "../logger";
 import WallShadow from "./WallShadow";
 
 const BOARD_SIZE = 17;
-const TILE_COLOR = "bg-orange-300";
-const RECTANGLE_GAP_COLOR = "bg-orange-900";
-const SQUARE_GAP_COLOR = "bg-orange-900";
+const TILE_COLOR = "stone-800";
+const GAP_COLOR = "stone-400";
 
 const Board = () => {
 	/*
@@ -266,7 +265,10 @@ const Board = () => {
 
 	const renderTiles = (rowIndex, colIndex, cell) => {
 		return (
-			<div key={colIndex} className={` ${TILE_COLOR} w-10 h-10`}>
+			<div
+				key={colIndex}
+				className={` bg-${TILE_COLOR} w-10 h-10 opacity-30`}
+			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
 		);
@@ -279,7 +281,7 @@ const Board = () => {
 				onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
 				onMouseLeave={() => handleMouseLeave(rowIndex, colIndex)}
 				onClick={() => handleGapClick(rowIndex, colIndex)}
-				className={` ${RECTANGLE_GAP_COLOR} ${
+				className={` bg-${GAP_COLOR} ${
 					rowIndex % 2 === 1 ? "h-2" : "h-10"
 				} ${colIndex % 2 === 1 ? "w-2" : "w-10"} `}
 			>
@@ -295,7 +297,7 @@ const Board = () => {
 				onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
 				onMouseLeave={() => handleMouseLeave(rowIndex, colIndex)}
 				onClick={() => handleGapClick(rowIndex, colIndex)}
-				className={` ${SQUARE_GAP_COLOR} w-2 h-2`}
+				className={` bg-${GAP_COLOR} w-2 h-2`}
 			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
@@ -303,32 +305,36 @@ const Board = () => {
 	};
 
 	const renderVerticalLabels = (rowIndex) => {
-		const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		const labels = "1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20"
 			.split("")
 			.slice(0, BOARD_SIZE);
+
 		return (
 			<div
-				className={`border bg-white w-10 ${
+				className={` bg-${GAP_COLOR} w-10 ${
 					rowIndex % 2 === 1 ? "h-2" : "h-10"
 				} flex justify-center items-center`}
 			>
-				{labels[rowIndex]}
+				{rowIndex % 2 === 0 && labels[rowIndex]}
 			</div>
 		);
 	};
 
 	const renderHorizontalLabels = () => {
+		const labels = "a-b-c-d-e-f-g-h-i-j-k-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z"
+			.split("")
+			.slice(0, BOARD_SIZE);
 		return (
 			<div className="flex">
 				<div className="w-10 h-10"></div>
 				{board[0].map((cell, colIndex) => (
 					<div
 						key={colIndex}
-						className={`border bg-white h-10 ${
+						className={` bg-${GAP_COLOR} h-10 ${
 							colIndex % 2 === 1 ? "w-2" : "w-10"
 						} flex justify-center items-center`}
 					>
-						{colIndex + 1}
+						{colIndex % 2 === 0 && labels[colIndex]}
 					</div>
 				))}
 			</div>
@@ -339,7 +345,7 @@ const Board = () => {
 		return (
 			<div className="flex justify-center items-center h-screen">
 				<div
-					className={`border-[40px] border-orange-900 rounded-[30px]`}
+					className={`border-l-[20px] border-b-[20px] border-[40px]  border-${GAP_COLOR} bg-${GAP_COLOR} rounded-[30px]`}
 				>
 					{board.map((row, rowIndex) => (
 						<div key={rowIndex} className="flex">
