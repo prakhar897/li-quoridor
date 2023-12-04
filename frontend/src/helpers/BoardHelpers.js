@@ -30,9 +30,14 @@ export const getValidAdjacentPawnCoords = (rowIndex, colIndex, cells) => {
 };
 
 export const getWallCoords = (rowIndex, colIndex) => {
+	rowIndex = parseInt(rowIndex);
+	colIndex = parseInt(colIndex);
 	if (typeOfCell(rowIndex, colIndex) === "RECTANGLE_GAP") {
+		console.log("rect gap");
 		if (typeOfRectangularCell(rowIndex, colIndex) === "VERTICAL") {
+			console.log("vertical");
 			if (rowIndex === CONSTANTS.BOARD_SIZE - 1) {
+				console.log("endofboard");
 				return [
 					[
 						[rowIndex, colIndex],

@@ -1,4 +1,4 @@
-import { log } from "../logger";
+import log from "../logger";
 
 export const handleMouseEnteringGap = (rowIndex, colIndex) => {
 	return { type: "ADD_WALL_SHADOW", payload: { rowIndex, colIndex } };

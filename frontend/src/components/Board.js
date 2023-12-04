@@ -6,12 +6,23 @@ import CONSTANTS from "../constants";
 import Pawn from "./Pawn";
 import Wall from "./Wall";
 
+import {
+	handleGapClick,
+	handleMouseEnteringGap,
+	handleMouseLeavingGap,
+} from "../actions/BoardAction";
+
 const BOARD_SIZE = CONSTANTS.BOARD_SIZE;
 
 const BG_GAP_COLOR = "bg-stone-400";
 const BG_TILE_COLOR = "bg-stone-800";
 
-const Board = ({ cells }) => {
+const Board = ({
+	cells,
+	handleGapClick,
+	handleMouseEnteringGap,
+	handleMouseLeavingGap,
+}) => {
 	const renderCellContent = (rowIndex, colIndex, cell) => {
 		switch (typeOfCell(rowIndex, colIndex)) {
 			case "TILE":
@@ -71,6 +82,9 @@ const Board = ({ cells }) => {
 				className={` ${BG_GAP_COLOR} ${
 					rowIndex % 2 === 1 ? "h-2" : "h-10"
 				} ${colIndex % 2 === 1 ? "w-2" : "w-10"} `}
+				onClick={() => handleGapClick(rowIndex, colIndex)}
+				onMouseEnter={() => handleMouseEnteringGap(rowIndex, colIndex)}
+				onMouseLeave={() => handleMouseLeavingGap(rowIndex, colIndex)}
 			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
@@ -79,7 +93,13 @@ const Board = ({ cells }) => {
 
 	const renderSquareGaps = (rowIndex, colIndex, cell) => {
 		return (
-			<div key={colIndex} className={` ${BG_GAP_COLOR} w-2 h-2`}>
+			<div
+				key={colIndex}
+				className={` ${BG_GAP_COLOR} w-2 h-2`}
+				onClick={() => handleGapClick(rowIndex, colIndex)}
+				onMouseEnter={() => handleMouseEnteringGap(rowIndex, colIndex)}
+				onMouseLeave={() => handleMouseLeavingGap(rowIndex, colIndex)}
+			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
 		);
@@ -170,4 +190,10 @@ const mapStateToProps = (state) => ({
 	cells: state.board.cells,
 });
 
-export default connect(mapStateToProps, null)(Board);
+const mapDispatchToProps = {
+	handleGapClick: handleGapClick,
+	handleMouseEnteringGap: handleMouseEnteringGap,
+	handleMouseLeavingGap: handleMouseLeavingGap,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Board);

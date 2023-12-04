@@ -14,6 +14,7 @@ const Pawn = ({
 		: "bg-white opacity-50";
 
 	const handleClick = () => {
+		log.info(`Pawn clicked at row ${rowIndex}, col ${colIndex}`);
 		if (isShadow) {
 			log.info(`Pawn Shadow clicked at row ${rowIndex}, col ${colIndex}`);
 			const parentPawnCoords =

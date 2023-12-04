@@ -117,15 +117,18 @@ const boardReducer = (state = initialState, action) => {
 				action.payload.colIndex
 			);
 
-			const newCells = [...state.cells];
-			for (let coords in wallCoords) {
-				const [rowIndex, colIndex] = wallCoords[coords];
-				newCells[rowIndex][colIndex] = 1;
+			console.log(wallCoords);
+
+			var newCells = [...state.cells];
+			for (const [rowIndex, colIndex] of wallCoords) {
+				console.log(rowIndex, colIndex);
+				newCells[parseInt(rowIndex)][parseInt(colIndex)] = 1;
+				console.log(newCells);
 			}
 
 			return {
-				cells: newCells,
 				...state,
+				cells: newCells,
 			};
 		}
 
@@ -136,14 +139,13 @@ const boardReducer = (state = initialState, action) => {
 			);
 
 			const newCells = [...state.cells];
-			for (let coords in wallCoords) {
-				const [rowIndex, colIndex] = wallCoords[coords];
-				newCells[rowIndex][colIndex] = 0;
+			for (const [rowIndex, colIndex] of wallCoords) {
+				newCells[parseInt(rowIndex)][parseInt(colIndex)] = 0;
 			}
 
 			return {
-				cells: newCells,
 				...state,
+				cells: newCells,
 			};
 		}
 
@@ -154,14 +156,13 @@ const boardReducer = (state = initialState, action) => {
 			);
 
 			const newCells = [...state.cells];
-			for (let coords in wallCoords) {
-				const [rowIndex, colIndex] = wallCoords[coords];
-				newCells[rowIndex][colIndex] = 2;
+			for (const [rowIndex, colIndex] of wallCoords) {
+				newCells[parseInt(rowIndex)][parseInt(colIndex)] = 2;
 			}
 
 			return {
-				cells: newCells,
 				...state,
+				cells: newCells,
 			};
 		}
 
