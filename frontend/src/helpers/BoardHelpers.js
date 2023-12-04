@@ -1,6 +1,6 @@
 import CONSTANTS from "../constants";
 
-export const getValidAdjacentPawnCoords = (rowIndex, colIndex, cells) => {
+export const getValidAdjacentPawnCoords = (rowIndex, colIndex) => {
 	const adjacentList = [
 		[-2, 0],
 		[2, 0],

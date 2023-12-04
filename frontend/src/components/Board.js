@@ -25,21 +25,12 @@ const Board = ({
 	handleMouseLeavingGap,
 }) => {
 	const renderCellContent = (rowIndex, colIndex) => {
-		const pawn = pawns.find(
-			(p) =>
-				p.position.rowIndex === rowIndex &&
-				p.position.colIndex === colIndex
-		);
-		const wall = walls.find(
-			(w) =>
-				w.position.rowIndex === rowIndex &&
-				w.position.colIndex === colIndex
-		);
+		const pieceKey = rowIndex + "," + colIndex;
 
-		if (pawn) {
-			return <Pawn {...pawn} />;
-		} else if (wall) {
-			return <Wall {...wall} />;
+		if (pawns[pieceKey]) {
+			return <Pawn {...pawns[pieceKey]} />;
+		} else if (walls[pieceKey]) {
+			return <Wall {...walls[pieceKey]} />;
 		}
 		return null;
 	};
@@ -172,9 +163,7 @@ const Board = ({
 
 const mapStateToProps = (state) => ({
 	pawns: state.board.pawns,
-	pawnShadows: state.board.pawnShadows,
 	walls: state.board.walls,
-	wallShadows: state.board.wallShadows,
 });
 
 const mapDispatchToProps = {

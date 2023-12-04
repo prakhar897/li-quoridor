@@ -3,11 +3,10 @@ import {
 	getValidAdjacentPawnCoords,
 	getWallCoords,
 } from "../helpers/BoardHelpers";
-import log from "../logger";
 
 const initialState = {
-	pawns: [
-		{
+	pawns: {
+		"0,8": {
 			id: 0,
 			position: {
 				rowIndex: 0,
@@ -16,7 +15,7 @@ const initialState = {
 			isClicked: false,
 			isShadow: false,
 		},
-		{
+		"16,8": {
 			id: 1,
 			position: {
 				rowIndex: 16,
@@ -25,15 +24,13 @@ const initialState = {
 			isClicked: false,
 			isShadow: true,
 		},
-	],
-	pawnShadows: [],
-	walls: [],
-	wallShadows: [],
+	},
+	walls: {},
 };
 
 // var sampleState = {
-// 	pawns: [
-// 		{
+// 	pawns: {
+// 		"0,8": {
 // 			id: 0,
 // 			position: {
 // 				rowIndex: 0,
@@ -42,7 +39,7 @@ const initialState = {
 // 			isClicked: false,
 // 			isShadow: false,
 // 		},
-// 		{
+// 		"16,8": {
 // 			id: 1,
 // 			position: {
 // 				rowIndex: 16,
@@ -51,7 +48,7 @@ const initialState = {
 // 			isClicked: false,
 // 			isShadow: false,
 // 		},
-// 		{
+// 		"2,8": {
 // 			id: 0,
 // 			position: {
 // 				rowIndex: 2,
@@ -63,7 +60,7 @@ const initialState = {
 // 				colIndex: 9,
 // 			},
 // 		},
-// 		{
+// 		"14,8": {
 // 			id: 1,
 // 			position: {
 // 				rowIndex: 14,
@@ -75,9 +72,9 @@ const initialState = {
 // 				colIndex: 9,
 // 			},
 // 		},
-// 	],
-// 	walls: [
-// 		{
+// 	},
+// 	walls: {
+// 		"11,9": {
 // 			id: 0,
 // 			position: {
 // 				rowIndex: 11,
@@ -85,7 +82,7 @@ const initialState = {
 // 			},
 // 			isShadow: false,
 // 		},
-// 		{
+// 		"14,9": {
 // 			id: 1,
 // 			position: {
 // 				rowIndex: 14,
@@ -93,7 +90,7 @@ const initialState = {
 // 			},
 // 			isShadow: false,
 // 		},
-// 		{
+// 		"11,11": {
 // 			id: 0,
 // 			position: {
 // 				rowIndex: 11,
@@ -101,7 +98,7 @@ const initialState = {
 // 			},
 // 			isShadow: true,
 // 		},
-// 		{
+// 		"14,11": {
 // 			id: 1,
 // 			position: {
 // 				rowIndex: 14,
@@ -109,84 +106,81 @@ const initialState = {
 // 			},
 // 			isShadow: true,
 // 		},
-// 	],
+// 	},
 // };
 
 const boardReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case "ADD_PAWN_SHADOW": {
+		case "PAWN_TOGGLE": {
 			const adjacentCoordsList = getValidAdjacentPawnCoords(
 				action.payload.rowIndex,
-				action.payload.colIndex,
-				state.cells
+				action.payload.colIndex
 			);
 
-			const newCells = [...state.cells];
-			const newPawnShadowParent = { ...state.pawnShadowParent };
+			const newPawns = { ...state.pawns };
 
-			for (let coords in adjacentCoordsList) {
-				const [rowIndex, colIndex] = adjacentCoordsList[coords];
-				newCells[rowIndex][colIndex] = 1;
-				newPawnShadowParent[
-					`${rowIndex},${colIndex}`
-				] = `${action.payload.rowIndex},${action.payload.colIndex}`;
+			let parentPieceKey =
+				action.payload.rowIndex + "," + action.payload.colIndex;
+
+			for (let [rowIndex, colIndex] in adjacentCoordsList) {
+				let pieceKey = rowIndex + "," + colIndex;
+				if (!newPawns[parentPieceKey].isClicked) {
+					const newShadowPawn = {
+						id: CONSTANTS.BOARD_SIZE * rowIndex + colIndex,
+						position: {
+							rowIndex: rowIndex,
+							colIndex: colIndex,
+						},
+						isShadow: true,
+						parentPostion: {
+							rowIndex: action.payload.rowIndex,
+							colIndex: action.payload.colIndex,
+						},
+					};
+					newPawns[pieceKey] = newShadowPawn;
+				} else {
+					delete newPawns[pieceKey];
+				}
 			}
 
-			return {
-				cells: newCells,
-				pawnShadowParent: newPawnShadowParent,
+			const newParentPawn = {
+				...newPawns[parentPieceKey],
+				isClicked: !newPawns[parentPieceKey].isClicked,
 			};
-		}
-
-		case "REMOVE_PAWN_SHADOW": {
-			const adjacentCoordsList = getValidAdjacentPawnCoords(
-				action.payload.rowIndex,
-				action.payload.colIndex,
-				state.cells
-			);
-
-			const newCells = [...state.cells];
-			const newPawnShadowParent = { ...state.pawnShadowParent };
-
-			for (let coords in adjacentCoordsList) {
-				const [rowIndex, colIndex] = adjacentCoordsList[coords];
-				newCells[rowIndex][colIndex] = 0;
-				delete newPawnShadowParent[`${rowIndex},${colIndex}`];
-			}
+			newPawns[parentPieceKey] = newParentPawn;
 
 			return {
-				cells: newCells,
-				pawnShadowParent: newPawnShadowParent,
+				...state,
+				pawns: newPawns,
 			};
 		}
 
 		case "PAWN_SHADOW_CLICK": {
-			const parentPawnCoords =
-				state.pawnShadowParent[
-					`${action.payload.rowIndex},${action.payload.rowIndex}`
-				].split(",");
+			const newPawns = { ...state.pawns };
+
+			let shadowPieceKey =
+				action.payload.rowIndex + "," + action.payload.colIndex;
 
 			const adjacentCoordsList = getValidAdjacentPawnCoords(
-				parseInt(parentPawnCoords[0]),
-				parseInt(parentPawnCoords[1]),
-				state.cells
+				newPawns[shadowPieceKey].parentPostion.rowIndex,
+				newPawns[shadowPieceKey].parentPostion.colIndex
 			);
 
-			const newCells = [...state.cells];
-			const newPawnShadowParent = { ...state.pawnShadowParent };
-
-			for (let coords in adjacentCoordsList) {
-				const [rowIndex, colIndex] = adjacentCoordsList[coords];
-				newCells[rowIndex][colIndex] = 0;
-				delete newPawnShadowParent[`${rowIndex},${colIndex}`];
+			for (let [rowIndex, colIndex] in adjacentCoordsList) {
+				let pieceKey = rowIndex + "," + colIndex;
+				delete newPawns[pieceKey];
 			}
 
-			newCells[parentPawnCoords[0]][parentPawnCoords[1]] = 0;
-			newCells[action.payload.rowIndex][action.payload.colIndex] = 2;
+			newPawns[shadowPieceKey] = {
+				...newPawns[shadowPieceKey],
+				isClicked: false,
+				isShadow: false,
+				parentPositions: [],
+			};
 
 			return {
-				cells: newCells,
-				pawnShadowParent: {},
+				...state,
+				pawns: newPawns,
 			};
 		}
 
@@ -196,8 +190,9 @@ const boardReducer = (state = initialState, action) => {
 				action.payload.colIndex
 			);
 
-			const newWalls = [...state.walls];
+			const newWalls = { ...state.walls };
 			for (const [rowIndex, colIndex] of wallCoords) {
+				const pieceKey = rowIndex + "," + colIndex;
 				const newWall = {
 					id: CONSTANTS.BOARD_SIZE * rowIndex + colIndex,
 					position: {
@@ -206,7 +201,7 @@ const boardReducer = (state = initialState, action) => {
 					},
 					isShadow: true,
 				};
-				newWalls.push(newWall);
+				newWalls[pieceKey] = newWall;
 			}
 
 			return {
@@ -221,21 +216,11 @@ const boardReducer = (state = initialState, action) => {
 				action.payload.colIndex
 			);
 
-			const newWalls = [...state.walls];
+			const newWalls = { ...state.walls };
 
-			for (let i = newWalls.length - 1; i >= 0; i--) {
-				const item = newWalls[i];
-				if (!item.isShadow) continue;
-
-				const shouldRemove = wallCoords.some(
-					(w) =>
-						w[0] === item.position.rowIndex &&
-						w[1] === item.position.colIndex
-				);
-
-				if (shouldRemove) {
-					newWalls.splice(i, 1); // Remove the item at index i
-				}
+			for (const [rowIndex, colIndex] of wallCoords) {
+				const pieceKey = rowIndex + "," + colIndex;
+				delete newWalls[pieceKey];
 			}
 
 			return {
@@ -250,24 +235,10 @@ const boardReducer = (state = initialState, action) => {
 				action.payload.colIndex
 			);
 
-			const newWalls = [...state.walls];
-
-			for (let i = newWalls.length - 1; i >= 0; i--) {
-				const item = newWalls[i];
-				if (!item.isShadow) continue;
-
-				const shouldRemove = wallCoords.some(
-					(w) =>
-						w[0] === item.position.rowIndex &&
-						w[1] === item.position.colIndex
-				);
-
-				if (shouldRemove) {
-					newWalls.splice(i, 1); // Remove the item at index i
-				}
-			}
+			const newWalls = { ...state.walls };
 
 			for (const [rowIndex, colIndex] of wallCoords) {
+				const pieceKey = rowIndex + "," + colIndex;
 				const newWall = {
 					id: CONSTANTS.BOARD_SIZE * rowIndex + colIndex,
 					position: {
@@ -276,7 +247,7 @@ const boardReducer = (state = initialState, action) => {
 					},
 					isShadow: false,
 				};
-				newWalls.push(newWall);
+				newWalls[pieceKey] = newWall;
 			}
 
 			return {
