@@ -1,9 +1,36 @@
 import React from "react";
+import { connect } from "react-redux";
 
-const BG_WALL_COLOR = "bg-black";
+import {
+	handleGapClick,
+	handleMouseEnteringGap,
+	handleMouseLeavingGap,
+} from "../actions/BoardAction";
 
-const Wall = () => {
-	return <div className={`${BG_WALL_COLOR} w-full h-full`}></div>;
+const Wall = ({
+	rowIndex,
+	colIndex,
+	isShadow,
+	handleGapClick,
+	handleMouseEnteringGap,
+	handleMouseLeavingGap,
+}) => {
+	const shadowColor = isShadow ? "bg-black opacity-30" : "bg-black";
+
+	return (
+		<div
+			className={`${shadowColor} w-full h-full`}
+			onClick={() => handleGapClick(rowIndex, colIndex)}
+			onMouseEnter={() => handleMouseEnteringGap(rowIndex, colIndex)}
+			onMouseLeave={() => handleMouseLeavingGap(rowIndex, colIndex)}
+		></div>
+	);
 };
 
-export default Wall;
+const mapDispatchToProps = {
+	handleGapClick: handleGapClick,
+	handleMouseEnteringGap: handleMouseEnteringGap,
+	handleMouseLeavingGap: handleMouseLeavingGap,
+};
+
+export default connect(null, mapDispatchToProps)(Wall);
