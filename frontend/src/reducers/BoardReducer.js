@@ -3,35 +3,114 @@ import {
 	getValidAdjacentPawnCoords,
 	getWallCoords,
 } from "../helpers/BoardHelpers";
-
-const createInitialCells = () => {
-	let initialBoard = [];
-
-	// Initialize the board with 0s for empty spaces
-	for (let i = 0; i < CONSTANTS.BOARD_SIZE; i++) {
-		initialBoard.push(new Array(CONSTANTS.BOARD_SIZE).fill(0));
-	}
-	initialBoard[2][2] = 2;
-
-	initialBoard[1][3] = 2;
-	initialBoard[1][4] = 2;
-	initialBoard[1][5] = 2;
-
-	initialBoard[3][3] = 1;
-	initialBoard[3][4] = 1;
-	initialBoard[3][5] = 1;
-	return initialBoard;
-};
+import log from "../logger";
 
 const initialState = {
-	/*
-		Board array has the following data: 
-		 if its a tile: 0 = empty, 1: shadow-pawn, 2: your-pawn, 3: opposite-pawn
-		 if its a gap: 0 = empty, 1: shadow-wall, 2: your-wall, 3: opposite-wall
-	*/
-	cells: createInitialCells(),
-	pawnShadowParent: {},
+	pawns: [
+		{
+			id: 0,
+			position: {
+				rowIndex: 0,
+				colIndex: 8,
+			},
+			isClicked: false,
+			isShadow: false,
+		},
+		{
+			id: 1,
+			position: {
+				rowIndex: 16,
+				colIndex: 8,
+			},
+			isClicked: false,
+			isShadow: true,
+		},
+	],
+	pawnShadows: [],
+	walls: [],
+	wallShadows: [],
 };
+
+// var sampleState = {
+// 	pawns: [
+// 		{
+// 			id: 0,
+// 			position: {
+// 				rowIndex: 0,
+// 				colIndex: 8,
+// 			},
+// 			isClicked: false,
+// 			isShadow: false,
+// 		},
+// 		{
+// 			id: 1,
+// 			position: {
+// 				rowIndex: 16,
+// 				colIndex: 8,
+// 			},
+// 			isClicked: false,
+// 			isShadow: false,
+// 		},
+// 		{
+// 			id: 0,
+// 			position: {
+// 				rowIndex: 2,
+// 				colIndex: 8,
+// 			},
+// 			isShadow: true,
+// 			parentPostion: {
+// 				rowIndex: 1,
+// 				colIndex: 9,
+// 			},
+// 		},
+// 		{
+// 			id: 1,
+// 			position: {
+// 				rowIndex: 14,
+// 				colIndex: 8,
+// 			},
+// 			isShadow: true,
+// 			parentPostion: {
+// 				rowIndex: 1,
+// 				colIndex: 9,
+// 			},
+// 		},
+// 	],
+// 	walls: [
+// 		{
+// 			id: 0,
+// 			position: {
+// 				rowIndex: 11,
+// 				colIndex: 9,
+// 			},
+// 			isShadow: false,
+// 		},
+// 		{
+// 			id: 1,
+// 			position: {
+// 				rowIndex: 14,
+// 				colIndex: 9,
+// 			},
+// 			isShadow: false,
+// 		},
+// 		{
+// 			id: 0,
+// 			position: {
+// 				rowIndex: 11,
+// 				colIndex: 11,
+// 			},
+// 			isShadow: true,
+// 		},
+// 		{
+// 			id: 1,
+// 			position: {
+// 				rowIndex: 14,
+// 				colIndex: 11,
+// 			},
+// 			isShadow: true,
+// 		},
+// 	],
+// };
 
 const boardReducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -117,18 +196,22 @@ const boardReducer = (state = initialState, action) => {
 				action.payload.colIndex
 			);
 
-			console.log(wallCoords);
-
-			var newCells = [...state.cells];
+			const newWalls = [...state.walls];
 			for (const [rowIndex, colIndex] of wallCoords) {
-				console.log(rowIndex, colIndex);
-				newCells[parseInt(rowIndex)][parseInt(colIndex)] = 1;
-				console.log(newCells);
+				const newWall = {
+					id: CONSTANTS.BOARD_SIZE * rowIndex + colIndex,
+					position: {
+						rowIndex,
+						colIndex,
+					},
+					isShadow: true,
+				};
+				newWalls.push(newWall);
 			}
 
 			return {
 				...state,
-				cells: newCells,
+				walls: newWalls,
 			};
 		}
 
@@ -138,14 +221,26 @@ const boardReducer = (state = initialState, action) => {
 				action.payload.colIndex
 			);
 
-			const newCells = [...state.cells];
-			for (const [rowIndex, colIndex] of wallCoords) {
-				newCells[parseInt(rowIndex)][parseInt(colIndex)] = 0;
+			const newWalls = [...state.walls];
+
+			for (let i = newWalls.length - 1; i >= 0; i--) {
+				const item = newWalls[i];
+				if (!item.isShadow) continue;
+
+				const shouldRemove = wallCoords.some(
+					(w) =>
+						w[0] === item.position.rowIndex &&
+						w[1] === item.position.colIndex
+				);
+
+				if (shouldRemove) {
+					newWalls.splice(i, 1); // Remove the item at index i
+				}
 			}
 
 			return {
 				...state,
-				cells: newCells,
+				walls: newWalls,
 			};
 		}
 
@@ -155,21 +250,44 @@ const boardReducer = (state = initialState, action) => {
 				action.payload.colIndex
 			);
 
-			const newCells = [...state.cells];
+			const newWalls = [...state.walls];
+
+			for (let i = newWalls.length - 1; i >= 0; i--) {
+				const item = newWalls[i];
+				if (!item.isShadow) continue;
+
+				const shouldRemove = wallCoords.some(
+					(w) =>
+						w[0] === item.position.rowIndex &&
+						w[1] === item.position.colIndex
+				);
+
+				if (shouldRemove) {
+					newWalls.splice(i, 1); // Remove the item at index i
+				}
+			}
+
 			for (const [rowIndex, colIndex] of wallCoords) {
-				newCells[parseInt(rowIndex)][parseInt(colIndex)] = 2;
+				const newWall = {
+					id: CONSTANTS.BOARD_SIZE * rowIndex + colIndex,
+					position: {
+						rowIndex,
+						colIndex,
+					},
+					isShadow: false,
+				};
+				newWalls.push(newWall);
 			}
 
 			return {
 				...state,
-				cells: newCells,
+				walls: newWalls,
 			};
 		}
 
 		case "RESET_BOARD": {
 			return {
-				cells: createInitialCells(),
-				pawnShadowParent: {},
+				...initialState,
 			};
 		}
 

@@ -18,50 +18,30 @@ const BG_GAP_COLOR = "bg-stone-400";
 const BG_TILE_COLOR = "bg-stone-800";
 
 const Board = ({
-	cells,
+	pawns,
+	walls,
 	handleGapClick,
 	handleMouseEnteringGap,
 	handleMouseLeavingGap,
 }) => {
-	const renderCellContent = (rowIndex, colIndex, cell) => {
-		switch (typeOfCell(rowIndex, colIndex)) {
-			case "TILE":
-				if (cell === 2) {
-					return (
-						<Pawn
-							rowIndex={rowIndex}
-							colIndex={colIndex}
-							isShadow={false}
-						/>
-					);
-				} else if (cell === 1) {
-					return (
-						<Pawn
-							rowIndex={rowIndex}
-							colIndex={colIndex}
-							isShadow={true}
-						/>
-					);
-				}
-				break;
-			case "RECTANGLE_GAP":
-				if (cell === 2) {
-					return <Wall isShadow={false} />;
-				} else if (cell === 1) {
-					return <Wall isShadow={true} />;
-				}
+	const renderCellContent = (rowIndex, colIndex) => {
+		const pawn = pawns.find(
+			(p) =>
+				p.position.rowIndex === rowIndex &&
+				p.position.colIndex === colIndex
+		);
+		const wall = walls.find(
+			(w) =>
+				w.position.rowIndex === rowIndex &&
+				w.position.colIndex === colIndex
+		);
 
-				break;
-			case "SQUARE_GAP":
-				if (cell === 2) {
-					return <Wall isShadow={false} />;
-				} else if (cell === 1) {
-					return <Wall isShadow={true} />;
-				}
-				break;
-			default:
-				break;
+		if (pawn) {
+			return <Pawn {...pawn} />;
+		} else if (wall) {
+			return <Wall {...wall} />;
 		}
+		return null;
 	};
 
 	const renderTiles = (rowIndex, colIndex, cell) => {
@@ -75,7 +55,7 @@ const Board = ({
 		);
 	};
 
-	const renderRectangularGaps = (rowIndex, colIndex, cell) => {
+	const renderRectangularGaps = (rowIndex, colIndex) => {
 		return (
 			<div
 				key={colIndex}
@@ -86,12 +66,12 @@ const Board = ({
 				onMouseEnter={() => handleMouseEnteringGap(rowIndex, colIndex)}
 				onMouseLeave={() => handleMouseLeavingGap(rowIndex, colIndex)}
 			>
-				{renderCellContent(rowIndex, colIndex, cell)}
+				{renderCellContent(rowIndex, colIndex)}
 			</div>
 		);
 	};
 
-	const renderSquareGaps = (rowIndex, colIndex, cell) => {
+	const renderSquareGaps = (rowIndex, colIndex) => {
 		return (
 			<div
 				key={colIndex}
@@ -100,15 +80,15 @@ const Board = ({
 				onMouseEnter={() => handleMouseEnteringGap(rowIndex, colIndex)}
 				onMouseLeave={() => handleMouseLeavingGap(rowIndex, colIndex)}
 			>
-				{renderCellContent(rowIndex, colIndex, cell)}
+				{renderCellContent(rowIndex, colIndex)}
 			</div>
 		);
 	};
 
 	const renderVerticalLabels = (rowIndex) => {
-		const labels = "1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20"
-			.split("")
-			.slice(0, BOARD_SIZE);
+		const labels =
+			"1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20".split("");
+		const labelToShow = rowIndex % 2 === 0 ? labels[rowIndex] : null;
 
 		return (
 			<div
@@ -116,28 +96,33 @@ const Board = ({
 					rowIndex % 2 === 1 ? "h-2" : "h-10"
 				} flex justify-center items-center`}
 			>
-				{rowIndex % 2 === 0 && labels[rowIndex]}
+				{labelToShow}
 			</div>
 		);
 	};
 
 	const renderHorizontalLabels = () => {
-		const labels = "a-b-c-d-e-f-g-h-i-j-k-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z"
-			.split("")
-			.slice(0, BOARD_SIZE);
+		const labels =
+			"a-b-c-d-e-f-g-h-i-j-k-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z".split("");
+
 		return (
 			<div className="flex">
 				<div className="w-10 h-10"></div>
-				{cells[0].map((cell, colIndex) => (
-					<div
-						key={colIndex}
-						className={` ${BG_GAP_COLOR} h-10 ${
-							colIndex % 2 === 1 ? "w-2" : "w-10"
-						} flex justify-center items-center`}
-					>
-						{colIndex % 2 === 0 && labels[colIndex]}
-					</div>
-				))}
+				{Array.from({ length: BOARD_SIZE }).map((_, colIndex) => {
+					const labelToShow =
+						colIndex % 2 === 0 ? labels[colIndex] : null;
+
+					return (
+						<div
+							key={colIndex}
+							className={` ${BG_GAP_COLOR} h-10 ${
+								colIndex % 2 === 1 ? "w-2" : "w-10"
+							} flex justify-center items-center`}
+						>
+							{labelToShow}
+						</div>
+					);
+				})}
 			</div>
 		);
 	};
@@ -146,35 +131,34 @@ const Board = ({
 		return (
 			<div className="flex justify-center items-center h-screen">
 				<div
-					className={`pl-2.5 pb-2.5 pt-5 pr-5  ${BG_GAP_COLOR} rounded-[30px]`}
+					className={`pl-2.5 pb-2.5 pt-5 pr-5 ${BG_GAP_COLOR} rounded-[30px]`}
 				>
-					{cells.map((row, rowIndex) => (
+					{Array.from({ length: BOARD_SIZE }).map((_, rowIndex) => (
 						<div key={rowIndex} className="flex">
 							{renderVerticalLabels(rowIndex)}
-							{row.map((cellValue, colIndex) => {
-								if (rowIndex % 2 === 0 && colIndex % 2 === 0) {
-									return renderTiles(
-										rowIndex,
-										colIndex,
-										cellValue
-									);
-								} else if (
-									rowIndex % 2 === 1 &&
-									colIndex % 2 === 1
-								) {
-									return renderSquareGaps(
-										rowIndex,
-										colIndex,
-										cellValue
-									);
-								} else {
-									return renderRectangularGaps(
-										rowIndex,
-										colIndex,
-										cellValue
-									);
+							{Array.from({ length: BOARD_SIZE }).map(
+								(_, colIndex) => {
+									if (
+										typeOfCell(rowIndex, colIndex) ===
+										"TILE"
+									) {
+										return renderTiles(rowIndex, colIndex);
+									} else if (
+										typeOfCell(rowIndex, colIndex) ===
+										"SQUARE_GAP"
+									) {
+										return renderSquareGaps(
+											rowIndex,
+											colIndex
+										);
+									} else {
+										return renderRectangularGaps(
+											rowIndex,
+											colIndex
+										);
+									}
 								}
-							})}
+							)}
 						</div>
 					))}
 					{renderHorizontalLabels()}
@@ -187,7 +171,10 @@ const Board = ({
 };
 
 const mapStateToProps = (state) => ({
-	cells: state.board.cells,
+	pawns: state.board.pawns,
+	pawnShadows: state.board.pawnShadows,
+	walls: state.board.walls,
+	wallShadows: state.board.wallShadows,
 });
 
 const mapDispatchToProps = {

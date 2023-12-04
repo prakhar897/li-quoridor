@@ -29,47 +29,35 @@ export const getValidAdjacentPawnCoords = (rowIndex, colIndex, cells) => {
 	return adjacentCoordsList;
 };
 
+//TODO: fix walls
 export const getWallCoords = (rowIndex, colIndex) => {
-	rowIndex = parseInt(rowIndex);
-	colIndex = parseInt(colIndex);
 	if (typeOfCell(rowIndex, colIndex) === "RECTANGLE_GAP") {
-		console.log("rect gap");
 		if (typeOfRectangularCell(rowIndex, colIndex) === "VERTICAL") {
-			console.log("vertical");
 			if (rowIndex === CONSTANTS.BOARD_SIZE - 1) {
-				console.log("endofboard");
 				return [
-					[
-						[rowIndex, colIndex],
-						[rowIndex - 1, colIndex],
-						[rowIndex - 2, colIndex],
-					],
+					[rowIndex, colIndex],
+					[rowIndex - 1, colIndex],
+					[rowIndex - 2, colIndex],
 				];
 			} else {
 				return [
-					[
-						[rowIndex, colIndex],
-						[rowIndex + 1, colIndex],
-						[rowIndex + 2, colIndex],
-					],
+					[rowIndex, colIndex],
+					[rowIndex + 1, colIndex],
+					[rowIndex + 2, colIndex],
 				];
 			}
 		} else {
 			if (colIndex === CONSTANTS.BOARD_SIZE - 1) {
 				return [
-					[
-						[rowIndex, colIndex],
-						[rowIndex, colIndex - 1],
-						[rowIndex, colIndex - 2],
-					],
+					[rowIndex, colIndex],
+					[rowIndex, colIndex - 1],
+					[rowIndex, colIndex - 2],
 				];
 			} else {
 				return [
-					[
-						[rowIndex, colIndex],
-						[rowIndex, colIndex + 1],
-						[rowIndex, colIndex + 2],
-					],
+					[rowIndex, colIndex],
+					[rowIndex, colIndex + 1],
+					[rowIndex, colIndex + 2],
 				];
 			}
 		}
@@ -80,7 +68,7 @@ export const getWallCoords = (rowIndex, colIndex) => {
 			[rowIndex, colIndex + 1],
 		];
 	} else {
-		return null;
+		return [];
 	}
 };
 

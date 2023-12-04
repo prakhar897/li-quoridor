@@ -2,35 +2,40 @@ import { connect } from "react-redux";
 import log from "../logger";
 import { handlePawnClick, handlePawnShadowClick } from "../actions/BoardAction";
 
-const Pawn = ({
-	rowIndex,
-	colIndex,
-	isShadow,
-	isPawnClicked,
-	pawnShadowParent,
-}) => {
+/*
+Sample Prop
+{
+	id: 0,
+	position: {
+		rowIndex: 0,
+		colIndex: 8,
+	},
+	isClicked: false,
+	isShadow: true,
+	parentPostion: {
+		rowIndex: 1,
+		colIndex: 9
+	}
+}
+*/
+const Pawn = ({ id, position, isShadow, isClicked, parentPosition }) => {
 	const shadowColor = isShadow
 		? "bg-white opacity-100"
 		: "bg-white opacity-50";
 
 	const handleClick = () => {
-		log.info(`Pawn clicked at row ${rowIndex}, col ${colIndex}`);
+		log.info(
+			`Pawn clicked at row ${position.rowIndex}, col ${position.colIndex}`
+		);
 		if (isShadow) {
-			log.info(`Pawn Shadow clicked at row ${rowIndex}, col ${colIndex}`);
-			const parentPawnCoords =
-				pawnShadowParent[`${rowIndex},${colIndex}`].split(",");
 			handlePawnShadowClick(
-				rowIndex,
-				colIndex,
-				parseInt(parentPawnCoords[0]),
-				parseInt(parentPawnCoords[1])
+				position.rowIndex,
+				position.colIndex,
+				parentPosition.rowIndex,
+				parentPosition.colIndex
 			);
 		} else {
-			if (isPawnClicked) {
-				handlePawnClick(rowIndex, colIndex, "REMOVE");
-			} else {
-				handlePawnClick(rowIndex, colIndex, "ADD");
-			}
+			handlePawnClick(position.rowIndex, position.colIndex);
 		}
 	};
 
