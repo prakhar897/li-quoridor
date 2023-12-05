@@ -4,31 +4,7 @@ import {
 	getWallCoords,
 } from "../helpers/BoardHelpers";
 
-const initialState = {
-	pawns: {
-		"0,8": {
-			id: 0,
-			position: {
-				rowIndex: 0,
-				colIndex: 8,
-			},
-			isClicked: false,
-			isShadow: false,
-		},
-		"16,8": {
-			id: 1,
-			position: {
-				rowIndex: 16,
-				colIndex: 8,
-			},
-			isClicked: false,
-			isShadow: false,
-		},
-	},
-	walls: {},
-};
-
-// var sampleState = {
+// const initialState = {
 // 	pawns: {
 // 		"0,8": {
 // 			id: 0,
@@ -48,66 +24,94 @@ const initialState = {
 // 			isClicked: false,
 // 			isShadow: false,
 // 		},
-// 		"2,8": {
-// 			id: 0,
-// 			position: {
-// 				rowIndex: 2,
-// 				colIndex: 8,
-// 			},
-// 			isShadow: true,
-// 			parentPostion: {
-// 				rowIndex: 1,
-// 				colIndex: 9,
-// 			},
-// 		},
-// 		"14,8": {
-// 			id: 1,
-// 			position: {
-// 				rowIndex: 14,
-// 				colIndex: 8,
-// 			},
-// 			isShadow: true,
-// 			parentPostion: {
-// 				rowIndex: 1,
-// 				colIndex: 9,
-// 			},
-// 		},
 // 	},
-// 	walls: {
-// 		"11,9": {
-// 			id: 0,
-// 			position: {
-// 				rowIndex: 11,
-// 				colIndex: 9,
-// 			},
-// 			isShadow: false,
-// 		},
-// 		"14,9": {
-// 			id: 1,
-// 			position: {
-// 				rowIndex: 14,
-// 				colIndex: 9,
-// 			},
-// 			isShadow: false,
-// 		},
-// 		"11,11": {
-// 			id: 0,
-// 			position: {
-// 				rowIndex: 11,
-// 				colIndex: 11,
-// 			},
-// 			isShadow: true,
-// 		},
-// 		"14,11": {
-// 			id: 1,
-// 			position: {
-// 				rowIndex: 14,
-// 				colIndex: 11,
-// 			},
-// 			isShadow: true,
-// 		},
-// 	},
+// 	walls: {},
 // };
+
+var sampleState = {
+	boardId: 0,
+	moves: ["e2", "e8", "e1", "e7", "e4h", "h6v", "h5v"],
+	pawns: {
+		"0,8": {
+			id: 0,
+			position: {
+				rowIndex: 0,
+				colIndex: 8,
+			},
+			isClicked: false,
+			isShadow: false,
+		},
+		"16,8": {
+			id: 1,
+			position: {
+				rowIndex: 16,
+				colIndex: 8,
+			},
+			isClicked: false,
+			isShadow: false,
+		},
+		"2,8": {
+			id: 0,
+			position: {
+				rowIndex: 2,
+				colIndex: 8,
+			},
+			isShadow: true,
+			parentPostion: {
+				rowIndex: 1,
+				colIndex: 9,
+			},
+		},
+		"14,8": {
+			id: 1,
+			position: {
+				rowIndex: 14,
+				colIndex: 8,
+			},
+			isShadow: true,
+			parentPostion: {
+				rowIndex: 1,
+				colIndex: 9,
+			},
+		},
+	},
+	walls: {
+		"11,9": {
+			id: 0,
+			position: {
+				rowIndex: 11,
+				colIndex: 9,
+			},
+			isShadow: false,
+		},
+		"14,9": {
+			id: 1,
+			position: {
+				rowIndex: 14,
+				colIndex: 9,
+			},
+			isShadow: false,
+		},
+		"11,11": {
+			id: 0,
+			position: {
+				rowIndex: 11,
+				colIndex: 11,
+			},
+			isShadow: true,
+		},
+		"14,11": {
+			id: 1,
+			position: {
+				rowIndex: 14,
+				colIndex: 11,
+			},
+			isShadow: true,
+		},
+	},
+};
+
+var initialState = sampleState;
 
 const boardReducer = (state = initialState, action) => {
 	switch (action.type) {

@@ -1,9 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 
-/*
-	button animation not happen on trackpad.
-*/
 const ProfileBox = () => {
 	return (
 		<div className="flex items-center justify-between h-16 bg-gray-100 p-4">

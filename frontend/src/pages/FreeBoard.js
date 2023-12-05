@@ -2,6 +2,7 @@ import React from "react";
 import Board from "../components/Board";
 import Sidebar from "../components/Sidebar";
 import ProfileBox from "../components/ProfileBox";
+import MoveList from "../components/MoveList";
 const FreeBoard = () => {
 	return (
 		<div className="grid grid-cols-10 h-screen">
@@ -28,6 +29,7 @@ const FreeBoard = () => {
 				</div>
 			</div>
 			<div className="col-span-3 bg-gray-600">
+				<MoveList />
 				<Sidebar />
 			</div>
 		</div>
