@@ -77,8 +77,7 @@ const Board = ({
 	};
 
 	const renderVerticalLabels = (rowIndex) => {
-		const labels =
-			"1-2-3-4-5-6-7-8-9-10-11-12-13-14-15-16-17-18-19-20".split("");
+		const labels = "1-2-3-4-5-6-7-8-9".split("").reverse();
 		const labelToShow = rowIndex % 2 === 0 ? labels[rowIndex] : null;
 
 		return (
@@ -120,7 +119,7 @@ const Board = ({
 
 	const renderBoard = () => {
 		return (
-			<div className="flex justify-center items-center h-screen">
+			<div className="flex justify-center items-center h-auto w-auto mx-auto">
 				<div
 					className={`pl-2.5 pb-2.5 pt-5 pr-5 ${BG_GAP_COLOR} rounded-[30px]`}
 				>
@@ -129,25 +128,38 @@ const Board = ({
 							{renderVerticalLabels(rowIndex)}
 							{Array.from({ length: BOARD_SIZE }).map(
 								(_, colIndex) => {
-									if (
-										typeOfCell(rowIndex, colIndex) ===
-										"TILE"
-									) {
-										return renderTiles(rowIndex, colIndex);
-									} else if (
-										typeOfCell(rowIndex, colIndex) ===
-										"SQUARE_GAP"
-									) {
-										return renderSquareGaps(
-											rowIndex,
-											colIndex
-										);
-									} else {
-										return renderRectangularGaps(
-											rowIndex,
-											colIndex
-										);
+									const cellType = typeOfCell(
+										rowIndex,
+										colIndex
+									);
+									let cellComponent = null;
+									switch (cellType) {
+										case "TILE":
+											cellComponent = renderTiles(
+												rowIndex,
+												colIndex
+											);
+											break;
+										case "SQUARE_GAP":
+											cellComponent = renderSquareGaps(
+												rowIndex,
+												colIndex
+											);
+											break;
+										default:
+											cellComponent =
+												renderRectangularGaps(
+													rowIndex,
+													colIndex
+												);
+											break;
 									}
+
+									return (
+										<div key={`${rowIndex}-${colIndex}`}>
+											{cellComponent}
+										</div>
+									);
 								}
 							)}
 						</div>

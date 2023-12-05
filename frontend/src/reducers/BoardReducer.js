@@ -22,7 +22,7 @@ const initialState = {
 				colIndex: 8,
 			},
 			isClicked: false,
-			isShadow: true,
+			isShadow: false,
 		},
 	},
 	walls: {},

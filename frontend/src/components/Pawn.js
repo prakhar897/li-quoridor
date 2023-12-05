@@ -20,8 +20,8 @@ Sample Prop
 */
 const Pawn = ({ id, position, isShadow, isClicked, parentPosition }) => {
 	const shadowColor = isShadow
-		? "bg-white opacity-100"
-		: "bg-white opacity-50";
+		? "bg-white opacity-50"
+		: "bg-white opacity-100";
 
 	const handleClick = () => {
 		log.info(
