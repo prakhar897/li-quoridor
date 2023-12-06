@@ -2,14 +2,14 @@ import React from "react";
 import Board from "../components/Board";
 import Sidebar from "../components/Sidebar";
 import ProfileBox from "../components/ProfileBox";
-import MoveList from "../components/MoveList";
+
+import Navbar from "../components/Navbar";
 const FreeBoard = () => {
 	return (
 		<div className="grid grid-cols-10 h-screen">
 			<div className="col-span-1 bg-gray-600">
 				<div className="h-full flex items-center justify-center">
-					{/* Content for navigation bar */}
-					<p>Navigation Bar</p>
+					<Navbar />
 				</div>
 			</div>
 
@@ -28,8 +28,7 @@ const FreeBoard = () => {
 					</div>
 				</div>
 			</div>
-			<div className="col-span-3 bg-gray-600">
-				<MoveList />
+			<div className="col-span-3 bg-gray-600 h-screen">
 				<Sidebar />
 			</div>
 		</div>
