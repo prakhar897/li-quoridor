@@ -1,8 +1,5 @@
 import CONSTANTS from "../constants";
-import {
-	getValidAdjacentPawnCoords,
-	getWallCoords,
-} from "../helpers/BoardHelpers";
+import { getValidPawnMoves, getValidWallMoves } from "../helpers/BoardHelpers";
 
 const initialState = {
 	pawns: {
@@ -28,6 +25,7 @@ const initialState = {
 	walls: {},
 	moves: [],
 	boardId: 0,
+	turn: 1,
 };
 
 // var sampleState = {
@@ -118,17 +116,17 @@ const initialState = {
 const boardReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case "PAWN_TOGGLE": {
-			const adjacentCoordsList = getValidAdjacentPawnCoords(
-				action.payload.rowIndex,
-				action.payload.colIndex
-			);
+			const validPawnMoves = getValidPawnMoves(state.pawns, state.walls, {
+				rowIndex: action.payload.rowIndex,
+				colIndex: action.payload.colIndex,
+			});
 
 			const newPawns = { ...state.pawns };
 
 			let parentPieceKey =
 				action.payload.rowIndex + "," + action.payload.colIndex;
 
-			for (const [rowIndex, colIndex] of adjacentCoordsList) {
+			for (const [rowIndex, colIndex] of validPawnMoves) {
 				let pieceKey = rowIndex + "," + colIndex;
 
 				if (!newPawns[parentPieceKey].isClicked) {
@@ -175,12 +173,12 @@ const boardReducer = (state = initialState, action) => {
 
 			delete newPawns[parentPieceKey];
 
-			const adjacentCoordsList = getValidAdjacentPawnCoords(
-				newPawns[shadowPieceKey].parentPostion.rowIndex,
-				newPawns[shadowPieceKey].parentPostion.colIndex
-			);
+			const validPawnMoves = getValidPawnMoves(state.pawns, state.walls, {
+				rowIndex: newPawns[shadowPieceKey].parentPostion.rowIndex,
+				colIndex: newPawns[shadowPieceKey].parentPostion.colIndex,
+			});
 
-			for (const [rowIndex, colIndex] of adjacentCoordsList) {
+			for (const [rowIndex, colIndex] of validPawnMoves) {
 				let pieceKey = rowIndex + "," + colIndex;
 				delete newPawns[pieceKey];
 			}
@@ -205,21 +203,21 @@ const boardReducer = (state = initialState, action) => {
 		}
 
 		case "ADD_WALL_SHADOW": {
-			const wallCoords = getWallCoords(
-				action.payload.rowIndex,
-				action.payload.colIndex
-			);
+			const validWalls = getValidWallMoves(state.pawns, state.walls, {
+				rowIndex: action.payload.rowIndex,
+				colIndex: action.payload.colIndex,
+			});
 
 			const newWalls = { ...state.walls };
 
-			for (const [rowIndex, colIndex] of wallCoords) {
+			for (const [rowIndex, colIndex] of validWalls) {
 				let pieceKey = rowIndex + "," + colIndex;
 				if (state.walls[pieceKey] && !state.walls[pieceKey].isShadow) {
 					return state;
 				}
 			}
 
-			for (const [rowIndex, colIndex] of wallCoords) {
+			for (const [rowIndex, colIndex] of validWalls) {
 				const pieceKey = rowIndex + "," + colIndex;
 				const newWall = {
 					id: CONSTANTS.BOARD_SIZE * rowIndex + colIndex,
@@ -239,21 +237,21 @@ const boardReducer = (state = initialState, action) => {
 		}
 
 		case "REMOVE_WALL_SHADOW": {
-			const wallCoords = getWallCoords(
-				action.payload.rowIndex,
-				action.payload.colIndex
-			);
+			const validWalls = getValidWallMoves(state.pawns, state.walls, {
+				rowIndex: action.payload.rowIndex,
+				colIndex: action.payload.colIndex,
+			});
 
 			const newWalls = { ...state.walls };
 
-			for (const [rowIndex, colIndex] of wallCoords) {
+			for (const [rowIndex, colIndex] of validWalls) {
 				let pieceKey = rowIndex + "," + colIndex;
 				if (state.walls[pieceKey] && !state.walls[pieceKey].isShadow) {
 					return state;
 				}
 			}
 
-			for (const [rowIndex, colIndex] of wallCoords) {
+			for (const [rowIndex, colIndex] of validWalls) {
 				const pieceKey = rowIndex + "," + colIndex;
 				delete newWalls[pieceKey];
 			}
@@ -265,14 +263,21 @@ const boardReducer = (state = initialState, action) => {
 		}
 
 		case "ADD_WALL": {
-			const wallCoords = getWallCoords(
-				action.payload.rowIndex,
-				action.payload.colIndex
-			);
+			const validWalls = getValidWallMoves(state.pawns, state.walls, {
+				rowIndex: action.payload.rowIndex,
+				colIndex: action.payload.colIndex,
+			});
 
 			const newWalls = { ...state.walls };
 
-			for (const [rowIndex, colIndex] of wallCoords) {
+			for (const [rowIndex, colIndex] of validWalls) {
+				let pieceKey = rowIndex + "," + colIndex;
+				if (state.walls[pieceKey] && !state.walls[pieceKey].isShadow) {
+					return state;
+				}
+			}
+
+			for (const [rowIndex, colIndex] of validWalls) {
 				const pieceKey = rowIndex + "," + colIndex;
 				const newWall = {
 					id: CONSTANTS.BOARD_SIZE * rowIndex + colIndex,
