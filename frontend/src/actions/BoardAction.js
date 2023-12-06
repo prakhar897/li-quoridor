@@ -15,7 +15,7 @@ export const handleGapClick = (rowIndex, colIndex) => {
 	};
 };
 
-export const handlePawnClick = (rowIndex, colIndex, action) => {
+export const handlePawnClick = (rowIndex, colIndex) => {
 	return {
 		type: "PAWN_TOGGLE",
 		payload: { rowIndex, colIndex },

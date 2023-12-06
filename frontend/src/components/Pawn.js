@@ -18,7 +18,15 @@ Sample Prop
 	}
 }
 */
-const Pawn = ({ id, position, isShadow, isClicked, parentPosition }) => {
+const Pawn = ({
+	id,
+	position,
+	isShadow,
+	isClicked,
+	parentPosition,
+	handlePawnClick,
+	handlePawnShadowClick,
+}) => {
 	const shadowColor = isShadow
 		? "bg-white opacity-50"
 		: "bg-white opacity-100";
@@ -28,12 +36,7 @@ const Pawn = ({ id, position, isShadow, isClicked, parentPosition }) => {
 			`Pawn clicked at row ${position.rowIndex}, col ${position.colIndex}`
 		);
 		if (isShadow) {
-			handlePawnShadowClick(
-				position.rowIndex,
-				position.colIndex,
-				parentPosition.rowIndex,
-				parentPosition.colIndex
-			);
+			handlePawnShadowClick(position.rowIndex, position.colIndex);
 		} else {
 			handlePawnClick(position.rowIndex, position.colIndex);
 		}
