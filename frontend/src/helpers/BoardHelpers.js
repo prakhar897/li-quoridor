@@ -59,6 +59,24 @@ export const getValidPawnMoves = (pawns, walls, currentPawn) => {
 	return adjacentCoordsList;
 };
 
+export const isEdgeCell = (rowIndex, colIndex) => {
+	if (
+		typeOfCell(rowIndex, colIndex) === "RECTANGLE_GAP" &&
+		typeOfRectangularCell(rowIndex, colIndex) === "VERTICAL" &&
+		rowIndex === CONSTANTS.BOARD_SIZE - 1
+	) {
+		return true;
+	} else if (
+		typeOfCell(rowIndex, colIndex) === "RECTANGLE_GAP" &&
+		typeOfRectangularCell(rowIndex, colIndex) === "HORIZONTAL" &&
+		colIndex === CONSTANTS.BOARD_SIZE - 1
+	) {
+		return true;
+	}
+
+	return false;
+};
+
 export const getWallCoords = (rowIndex, colIndex) => {
 	if (typeOfCell(rowIndex, colIndex) === "RECTANGLE_GAP") {
 		if (typeOfRectangularCell(rowIndex, colIndex) === "VERTICAL") {
@@ -106,6 +124,7 @@ export const getValidWallMoves = (pawns, walls, currentCell) => {
 		currentCell.rowIndex,
 		currentCell.colIndex
 	);
+
 	return wallCoords;
 };
 
@@ -131,4 +150,53 @@ export const IsValidCell = (rowIndex, colIndex) => {
 		return false;
 	}
 	return true;
+};
+
+export const convertPawnMoveToNotation = (
+	endPawnPosition,
+	startPawnPosition
+) => {
+	console.log(startPawnPosition);
+	console.log(endPawnPosition);
+
+	let alphabet = String.fromCharCode(97 + endPawnPosition.colIndex / 2);
+	let numeral = 9 - endPawnPosition.rowIndex / 2;
+	return alphabet + "" + numeral;
+};
+
+export const convertAddingWalltoNotation = (newlyBuiltWalls) => {
+	console.log(newlyBuiltWalls);
+
+	let rows = [];
+	let cols = [];
+
+	Object.keys(newlyBuiltWalls).forEach((key) => {
+		let rowIndex = newlyBuiltWalls[key].position.rowIndex;
+		let colIndex = newlyBuiltWalls[key].position.colIndex;
+		rows.push(rowIndex);
+		cols.push(colIndex);
+	});
+
+	rows.sort(function (a, b) {
+		return a - b;
+	});
+	cols.sort(function (a, b) {
+		return a - b;
+	});
+
+	let alphabet;
+	let numeral;
+	let direction;
+
+	if (rows[0] === rows[2]) {
+		direction = "h";
+		alphabet = String.fromCharCode(97 + cols[0] / 2);
+		numeral = Math.floor(9 - rows[2] / 2);
+	} else {
+		direction = "v";
+		alphabet = String.fromCharCode(97 + cols[2] / 2);
+		numeral = Math.floor(9 - rows[2] / 2);
+	}
+
+	return alphabet + "" + numeral + "" + direction;
 };

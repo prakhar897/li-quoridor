@@ -1,5 +1,4 @@
 import { connect } from "react-redux";
-import log from "../logger";
 import { handlePawnClick, handlePawnShadowClick } from "../actions/BoardAction";
 
 /*
@@ -32,15 +31,10 @@ const Pawn = ({
 		? "bg-white opacity-50"
 		: "bg-white opacity-100";
 
-	console.log(turn, id);
-
 	const turnHighlight =
 		turn === id ? "border border-amber-200" : "border-2 border-black";
 
 	const handleClick = () => {
-		log.info(
-			`Pawn clicked at row ${position.rowIndex}, col ${position.colIndex}`
-		);
 		if (isShadow) {
 			handlePawnShadowClick(position.rowIndex, position.colIndex);
 		} else {

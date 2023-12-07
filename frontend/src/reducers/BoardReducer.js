@@ -1,5 +1,10 @@
 import CONSTANTS from "../constants";
-import { getValidPawnMoves, getValidWallMoves } from "../helpers/BoardHelpers";
+import {
+	getValidPawnMoves,
+	getValidWallMoves,
+	convertPawnMoveToNotation,
+	convertAddingWalltoNotation,
+} from "../helpers/BoardHelpers";
 
 const initialState = {
 	pawns: {
@@ -183,6 +188,22 @@ const boardReducer = (state = initialState, action) => {
 				"," +
 				newPawns[shadowPieceKey].parentPostion.colIndex;
 
+			let newMoves = [...state.moves];
+			newMoves.push(
+				convertPawnMoveToNotation(
+					{
+						rowIndex: action.payload.rowIndex,
+						colIndex: action.payload.colIndex,
+					},
+					{
+						rowIndex:
+							newPawns[shadowPieceKey].parentPostion.rowIndex,
+						colIndex:
+							newPawns[shadowPieceKey].parentPostion.colIndex,
+					}
+				)
+			);
+
 			if (
 				!state.pawns[parentPieceKey] ||
 				state.pawns[parentPieceKey].id !== state.turn
@@ -218,6 +239,7 @@ const boardReducer = (state = initialState, action) => {
 			return {
 				...state,
 				pawns: newPawns,
+				moves: newMoves,
 				turn: state.turn === 1 ? 0 : 1,
 			};
 		}
@@ -289,6 +311,7 @@ const boardReducer = (state = initialState, action) => {
 			});
 
 			const newWalls = { ...state.walls };
+			const onlyNewWalls = {};
 
 			for (const [rowIndex, colIndex] of validWalls) {
 				let pieceKey = rowIndex + "," + colIndex;
@@ -307,12 +330,17 @@ const boardReducer = (state = initialState, action) => {
 					},
 					isShadow: false,
 				};
+				onlyNewWalls[pieceKey] = newWall;
 				newWalls[pieceKey] = newWall;
 			}
+
+			const newMoves = [...state.moves];
+			newMoves.push(convertAddingWalltoNotation(onlyNewWalls));
 
 			return {
 				...state,
 				walls: newWalls,
+				moves: newMoves,
 				turn: state.turn === 1 ? 0 : 1,
 			};
 		}
