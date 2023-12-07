@@ -116,15 +116,26 @@ const initialState = {
 const boardReducer = (state = initialState, action) => {
 	switch (action.type) {
 		case "PAWN_TOGGLE": {
+			let parentPieceKey =
+				action.payload.rowIndex + "," + action.payload.colIndex;
+
+			if (
+				!state.pawns[parentPieceKey] ||
+				state.pawns[parentPieceKey].id !== state.turn
+			) {
+				// console.log("ending tog");
+				// console.log(state.turn);
+				// console.log(state.pawns[parentPieceKey]);
+				// console.log(state.pawns[parentPieceKey].id !== state.turn);
+				return state;
+			}
+
 			const validPawnMoves = getValidPawnMoves(state.pawns, state.walls, {
 				rowIndex: action.payload.rowIndex,
 				colIndex: action.payload.colIndex,
 			});
 
 			const newPawns = { ...state.pawns };
-
-			let parentPieceKey =
-				action.payload.rowIndex + "," + action.payload.colIndex;
 
 			for (const [rowIndex, colIndex] of validPawnMoves) {
 				let pieceKey = rowIndex + "," + colIndex;
@@ -138,6 +149,7 @@ const boardReducer = (state = initialState, action) => {
 						},
 						isShadow: true,
 						parentPostion: {
+							id: newPawns[parentPieceKey].id,
 							rowIndex: action.payload.rowIndex,
 							colIndex: action.payload.colIndex,
 						},
@@ -171,6 +183,14 @@ const boardReducer = (state = initialState, action) => {
 				"," +
 				newPawns[shadowPieceKey].parentPostion.colIndex;
 
+			if (
+				!state.pawns[parentPieceKey] ||
+				state.pawns[parentPieceKey].id !== state.turn
+			) {
+				return state;
+			}
+
+			let parentId = newPawns[parentPieceKey].id;
 			delete newPawns[parentPieceKey];
 
 			const validPawnMoves = getValidPawnMoves(state.pawns, state.walls, {
@@ -184,9 +204,8 @@ const boardReducer = (state = initialState, action) => {
 			}
 
 			newPawns[shadowPieceKey] = {
-				id:
-					CONSTANTS.BOARD_SIZE * action.payload.rowIndex +
-					action.payload.colIndex,
+				id: parentId,
+
 				position: {
 					rowIndex: action.payload.rowIndex,
 					colIndex: action.payload.colIndex,
@@ -199,6 +218,7 @@ const boardReducer = (state = initialState, action) => {
 			return {
 				...state,
 				pawns: newPawns,
+				turn: state.turn === 1 ? 0 : 1,
 			};
 		}
 
@@ -293,6 +313,7 @@ const boardReducer = (state = initialState, action) => {
 			return {
 				...state,
 				walls: newWalls,
+				turn: state.turn === 1 ? 0 : 1,
 			};
 		}
 

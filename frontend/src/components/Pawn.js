@@ -24,12 +24,18 @@ const Pawn = ({
 	isShadow,
 	isClicked,
 	parentPosition,
+	turn,
 	handlePawnClick,
 	handlePawnShadowClick,
 }) => {
 	const shadowColor = isShadow
 		? "bg-white opacity-50"
 		: "bg-white opacity-100";
+
+	console.log(turn, id);
+
+	const turnHighlight =
+		turn === id ? "border border-amber-200" : "border-2 border-black";
 
 	const handleClick = () => {
 		log.info(
@@ -44,7 +50,7 @@ const Pawn = ({
 
 	return (
 		<div
-			className={`w-9 h-9 mx-auto rounded-full border-2 border-black ${shadowColor}`}
+			className={`w-9 h-9 mx-auto rounded-full ${shadowColor} ${turnHighlight}`}
 			onClick={handleClick}
 		></div>
 	);

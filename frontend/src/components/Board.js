@@ -23,12 +23,13 @@ const Board = ({
 	handleGapClick,
 	handleMouseEnteringGap,
 	handleMouseLeavingGap,
+	turn,
 }) => {
 	const renderCellContent = (rowIndex, colIndex) => {
 		const pieceKey = rowIndex + "," + colIndex;
 
 		if (pawns[pieceKey]) {
-			return <Pawn {...pawns[pieceKey]} />;
+			return <Pawn {...pawns[pieceKey]} turn={turn} />;
 		} else if (walls[pieceKey]) {
 			return <Wall {...walls[pieceKey]} />;
 		}
@@ -176,6 +177,7 @@ const Board = ({
 const mapStateToProps = (state) => ({
 	pawns: state.board.pawns,
 	walls: state.board.walls,
+	turn: state.board.turn,
 });
 
 const mapDispatchToProps = {
