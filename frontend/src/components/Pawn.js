@@ -27,12 +27,15 @@ const Pawn = ({
 	handlePawnClick,
 	handlePawnShadowClick,
 }) => {
-	const shadowColor = isShadow
-		? "bg-white opacity-50"
-		: "bg-white opacity-100";
+	//const shadowColor = isShadow
+	//	? "opacity-50 !important"
+	//	: "opacity-100 !important";
 
 	const turnHighlight =
-		turn === id ? "border border-amber-200" : "border-2 border-black";
+		turn === id ? "border-2 border-amber-200" : "border-2 border-black";
+
+	const color =
+		id === 0 ? "bg-cyan-500" : id === 1 ? "bg-rose-500" : "bg-slate-50";
 
 	const handleClick = () => {
 		if (isShadow) {
@@ -44,7 +47,8 @@ const Pawn = ({
 
 	return (
 		<div
-			className={`w-9 h-9 mx-auto rounded-full ${shadowColor} ${turnHighlight}`}
+			className={`w-9 h-9 mx-auto rounded-full ${color}  ${turnHighlight}`}
+			style={{ opacity: isShadow ? 0.8 : 1 }}
 			onClick={handleClick}
 		></div>
 	);

@@ -1,39 +1,40 @@
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
-import { resetBoard } from "../actions/SidebarAction";
+import {
+	resetBoard,
+	importBoard,
+	exportBoard,
+	toggleImportExportPopup,
+	setPgn,
+	toggleIsPGNCopied,
+} from "../actions/SidebarAction";
 import MoveList from "../components/MoveList";
 import { XIcon } from "@heroicons/react/solid";
 
-/*
-	button animation not happen on trackpad.
-*/
-const Sidebar = ({ resetBoard }) => {
-	const [isPopupOpen, setIsPopupOpen] = useState(false);
-	//pgn = portable game notation
-	const [pgn, setPgn] = useState("sample pgn");
-	const [copied, setCopied] = useState(false);
-
-	const openPopup = () => {
-		setIsPopupOpen(true);
-	};
-
-	const closePopup = () => {
-		setIsPopupOpen(false);
-	};
-
+const Sidebar = ({
+	resetBoard,
+	importBoard,
+	exportBoard,
+	isImportExportPopupOpen,
+	toggleImportExportPopup,
+	pgn,
+	isPgnCopied,
+	setPgn,
+	toggleIsPGNCopied,
+	moves,
+}) => {
 	const handleImport = () => {
-		// Implement your import logic here
-		console.log("Importing PGN:", pgn);
-		closePopup();
+		importBoard(pgn);
+		toggleImportExportPopup();
 	};
-
+	// todo: copy clipboard doesnt work
 	const handleExport = () => {
-		// Implement your export logic here
-		navigator.clipboard.writeText("sample pgn");
-		console.log("Exporting PGN:", "sample pgn");
-		setCopied(true);
+		exportBoard(moves);
+		navigator.clipboard.writeText(pgn);
+		toggleIsPGNCopied();
+
 		setTimeout(() => {
-			setCopied(false);
+			toggleIsPGNCopied();
 		}, 2000);
 	};
 
@@ -53,17 +54,17 @@ const Sidebar = ({ resetBoard }) => {
 					className="cursor-pointer transition-all bg-red-500 text-white px-6 py-2 rounded-lg border-red-600
 							border-b-[4px] hover:brightness-110 mx-auto w-80
 							active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
-					onClick={openPopup}
+					onClick={() => toggleImportExportPopup()}
 				>
 					Import/Export
 				</button>
 
-				{isPopupOpen && (
+				{isImportExportPopupOpen && (
 					<div className="fixed inset-0 flex items-center justify-center">
 						<div className="bg-white p-6 rounded-lg w-1/2 h-1/2 relative">
 							<button
 								className="absolute top-0 right-0"
-								onClick={closePopup}
+								onClick={() => toggleImportExportPopup()}
 							>
 								<XIcon className="h-6 w-6 text-gray-500" />
 							</button>
@@ -89,7 +90,7 @@ const Sidebar = ({ resetBoard }) => {
 						</div>
 					</div>
 				)}
-				{copied && (
+				{isPgnCopied && (
 					<div className="fixed bottom-0 right-0 m-4 p-4 bg-green-500 text-white rounded">
 						Copied to clipboard!
 					</div>
@@ -99,8 +100,21 @@ const Sidebar = ({ resetBoard }) => {
 	);
 };
 
+const mapStateToProps = (state) => {
+	return {
+		pgn: state.sidebar.pgn,
+		isImportExportPopupOpen: state.sidebar.isImportExportPopupOpen,
+		isPgnCopied: state.sidebar.isPgnCopied,
+		moves: state.board.moves,
+	};
+};
 const mapDispatchToProps = {
 	resetBoard: resetBoard,
+	importBoard: importBoard,
+	exportBoard: exportBoard,
+	toggleImportExportPopup: toggleImportExportPopup,
+	setPgn: setPgn,
+	toggleIsPGNCopied: toggleIsPGNCopied,
 };
 
-export default connect(null, mapDispatchToProps)(Sidebar);
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

@@ -6,6 +6,8 @@ import {
 	convertAddingWalltoNotation,
 } from "../helpers/BoardHelpers";
 
+import { convertPGNToMoves } from "../helpers/SidebarHelpers";
+
 const initialState = {
 	pawns: {
 		"0,8": {
@@ -349,6 +351,22 @@ const boardReducer = (state = initialState, action) => {
 			return {
 				...initialState,
 			};
+		}
+
+		case "JUMP_TO_MOVE": {
+			const newMoves = [...state.moves].splice(
+				0,
+				action.payload.moveNumber + 1
+			);
+			return {
+				...state,
+				moves: newMoves,
+			};
+		}
+
+		case "IMPORT_BOARD": {
+			const newMoves = convertPGNToMoves(action.payload.pgn);
+			return { ...state, moves: newMoves };
 		}
 
 		default:

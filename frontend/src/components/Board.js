@@ -122,7 +122,7 @@ const Board = ({
 		return (
 			<div className="flex justify-center items-center h-auto w-auto mx-auto">
 				<div
-					className={`pl-2.5 pb-2.5 pt-5 pr-5 ${BG_GAP_COLOR} rounded-[30px]`}
+					className={`pl-2.5 pb-2.5 pt-5 pr-5 h-fit w-fit ${BG_GAP_COLOR} rounded-[30px]`}
 				>
 					{Array.from({ length: BOARD_SIZE }).map((_, rowIndex) => (
 						<div key={rowIndex} className="flex">
