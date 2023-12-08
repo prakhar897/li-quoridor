@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { handlePawnClick, handlePawnShadowClick } from "../actions/BoardAction";
+import { togglePawn, handlePawnShadowClick } from "../actions/BoardAction";
 
 /*
 Sample Prop
@@ -24,7 +24,7 @@ const Pawn = ({
 	isClicked,
 	parentPosition,
 	turn,
-	handlePawnClick,
+	togglePawn,
 	handlePawnShadowClick,
 }) => {
 	//const shadowColor = isShadow
@@ -41,7 +41,7 @@ const Pawn = ({
 		if (isShadow) {
 			handlePawnShadowClick(position.rowIndex, position.colIndex);
 		} else {
-			handlePawnClick(position.rowIndex, position.colIndex);
+			togglePawn(position.rowIndex, position.colIndex);
 		}
 	};
 
@@ -59,7 +59,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-	handlePawnClick: handlePawnClick,
+	togglePawn: togglePawn,
 	handlePawnShadowClick: handlePawnShadowClick,
 };
 

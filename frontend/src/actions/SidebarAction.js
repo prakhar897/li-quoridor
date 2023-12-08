@@ -42,12 +42,3 @@ export const toggleIsPGNCopied = () => {
 		type: "TOGGLE_IS_PGN_COPIED",
 	};
 };
-
-export const jumpToMove = (moveNumber) => {
-	return {
-		type: "JUMP_TO_MOVE",
-		payload: {
-			moveNumber: moveNumber,
-		},
-	};
-};

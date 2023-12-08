@@ -1,5 +1,3 @@
-import log from "../logger";
-
 export const handleMouseEnteringGap = (rowIndex, colIndex) => {
 	return { type: "ADD_WALL_SHADOW", payload: { rowIndex, colIndex } };
 };
@@ -15,7 +13,7 @@ export const handleGapClick = (rowIndex, colIndex) => {
 	};
 };
 
-export const handlePawnClick = (rowIndex, colIndex) => {
+export const togglePawn = (rowIndex, colIndex) => {
 	return {
 		type: "PAWN_TOGGLE",
 		payload: { rowIndex, colIndex },

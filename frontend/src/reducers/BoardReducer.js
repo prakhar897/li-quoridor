@@ -18,6 +18,7 @@ const initialState = {
 			},
 			isClicked: false,
 			isShadow: false,
+			goalRow: 16,
 		},
 		"16,8": {
 			id: 1,
@@ -27,6 +28,7 @@ const initialState = {
 			},
 			isClicked: false,
 			isShadow: false,
+			goalRow: 0,
 		},
 	},
 	walls: {},
@@ -130,10 +132,6 @@ const boardReducer = (state = initialState, action) => {
 				!state.pawns[parentPieceKey] ||
 				state.pawns[parentPieceKey].id !== state.turn
 			) {
-				// console.log("ending tog");
-				// console.log(state.turn);
-				// console.log(state.pawns[parentPieceKey]);
-				// console.log(state.pawns[parentPieceKey].id !== state.turn);
 				return state;
 			}
 
@@ -214,6 +212,7 @@ const boardReducer = (state = initialState, action) => {
 			}
 
 			let parentId = newPawns[parentPieceKey].id;
+			let goalRow = newPawns[parentPieceKey].goalRow;
 			delete newPawns[parentPieceKey];
 
 			const validPawnMoves = getValidPawnMoves(state.pawns, state.walls, {
@@ -235,6 +234,7 @@ const boardReducer = (state = initialState, action) => {
 				},
 				isClicked: false,
 				isShadow: false,
+				goalRow: goalRow,
 				parentPosition: {},
 			};
 
@@ -254,11 +254,8 @@ const boardReducer = (state = initialState, action) => {
 
 			const newWalls = { ...state.walls };
 
-			for (const [rowIndex, colIndex] of validWalls) {
-				let pieceKey = rowIndex + "," + colIndex;
-				if (state.walls[pieceKey] && !state.walls[pieceKey].isShadow) {
-					return state;
-				}
+			if (!validWalls) {
+				return state;
 			}
 
 			for (const [rowIndex, colIndex] of validWalls) {
@@ -288,11 +285,8 @@ const boardReducer = (state = initialState, action) => {
 
 			const newWalls = { ...state.walls };
 
-			for (const [rowIndex, colIndex] of validWalls) {
-				let pieceKey = rowIndex + "," + colIndex;
-				if (state.walls[pieceKey] && !state.walls[pieceKey].isShadow) {
-					return state;
-				}
+			if (!validWalls) {
+				return state;
 			}
 
 			for (const [rowIndex, colIndex] of validWalls) {
@@ -312,15 +306,12 @@ const boardReducer = (state = initialState, action) => {
 				colIndex: action.payload.colIndex,
 			});
 
+			if (!validWalls) {
+				return state;
+			}
+
 			const newWalls = { ...state.walls };
 			const onlyNewWalls = {};
-
-			for (const [rowIndex, colIndex] of validWalls) {
-				let pieceKey = rowIndex + "," + colIndex;
-				if (state.walls[pieceKey] && !state.walls[pieceKey].isShadow) {
-					return state;
-				}
-			}
 
 			for (const [rowIndex, colIndex] of validWalls) {
 				const pieceKey = rowIndex + "," + colIndex;
@@ -350,17 +341,6 @@ const boardReducer = (state = initialState, action) => {
 		case "RESET_BOARD": {
 			return {
 				...initialState,
-			};
-		}
-
-		case "JUMP_TO_MOVE": {
-			const newMoves = [...state.moves].splice(
-				0,
-				action.payload.moveNumber + 1
-			);
-			return {
-				...state,
-				moves: newMoves,
 			};
 		}
 

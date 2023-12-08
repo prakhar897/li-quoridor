@@ -125,7 +125,68 @@ export const getValidWallMoves = (pawns, walls, currentCell) => {
 		currentCell.colIndex
 	);
 
+	for (const [rowIndex, colIndex] of wallCoords) {
+		let pieceKey = rowIndex + "," + colIndex;
+		if (walls[pieceKey] && !walls[pieceKey].isShadow) {
+			return null;
+		}
+	}
+
+	for (let key in pawns) {
+		if (isBlockedFromGoal(pawns, pawns[key], walls, wallCoords)) {
+			return null;
+		}
+	}
+
 	return wallCoords;
+};
+
+export const addWallCoordsToWalls = (walls, wallCoords) => {
+	const newWalls = { ...walls };
+	for (let [rowIndex, colIndex] of wallCoords) {
+		newWalls[rowIndex + "," + colIndex] = {
+			position: {
+				rowIndex: rowIndex,
+				colIndex: colIndex,
+			},
+		};
+	}
+	return newWalls;
+};
+
+export const isBlockedFromGoal = (pawns, currentPawn, walls, wallCoords) => {
+	let key =
+		currentPawn.position.rowIndex + "," + currentPawn.position.colIndex;
+	let isVisited = {
+		key,
+	};
+
+	let queue = [key];
+
+	let newWalls = addWallCoordsToWalls(walls, wallCoords);
+
+	while (queue.length > 0) {
+		let currentKey = queue.shift();
+
+		let [rowIndex, colIndex] = currentKey.split(",");
+		let validTiles = getValidPawnMoves(pawns, newWalls, {
+			rowIndex: parseInt(rowIndex),
+			colIndex: parseInt(colIndex),
+		});
+
+		for (let [tileRowIndex, tileColIndex] of validTiles) {
+			if (tileRowIndex === currentPawn.goalRow) {
+				return false;
+			}
+			let tileKey = tileRowIndex + "," + tileColIndex;
+			if (!isVisited[tileKey]) {
+				isVisited[tileKey] = true;
+				queue.push(tileKey);
+			}
+		}
+	}
+
+	return true;
 };
 
 export const typeOfCell = (rowIndex, colIndex) => {
@@ -156,17 +217,12 @@ export const convertPawnMoveToNotation = (
 	endPawnPosition,
 	startPawnPosition
 ) => {
-	console.log(startPawnPosition);
-	console.log(endPawnPosition);
-
 	let alphabet = String.fromCharCode(97 + endPawnPosition.colIndex / 2);
 	let numeral = 9 - endPawnPosition.rowIndex / 2;
 	return alphabet + "" + numeral;
 };
 
 export const convertAddingWalltoNotation = (newlyBuiltWalls) => {
-	console.log(newlyBuiltWalls);
-
 	let rows = [];
 	let cols = [];
 

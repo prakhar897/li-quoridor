@@ -1,9 +1,34 @@
 import React from "react";
 import { connect } from "react-redux";
 import { COLOR_CONSTANTS } from "../constants";
-import { jumpToMove } from "../actions/SidebarAction";
+import { resetBoard } from "../actions/SidebarAction";
+import { handleGapClick, handlePawnShadowClick } from "../actions/BoardAction";
+import { convertNotationToMove } from "../helpers/SidebarHelpers";
 
-const MoveList = ({ moves, jumpToMove }) => {
+const MoveList = ({
+	moves,
+	resetBoard,
+	handleGapClick,
+	handlePawnShadowClick,
+}) => {
+	const jumpToMove = (moveIndex) => {
+		const newMoves = moves.splice(0, moveIndex + 1);
+		resetBoard();
+		for (let moveNotation of newMoves) {
+			console.log(moveNotation);
+			let move = convertNotationToMove(moveNotation);
+			console.log(move);
+			if (move.type === "PAWN") {
+				handleGapClick(move.payload.rowIndex, move.payload.colIndex);
+			} else {
+				handlePawnShadowClick(
+					move.payload.rowIndex,
+					move.payload.colIndex
+				);
+			}
+		}
+	};
+
 	const renderMoveItem = (move, index) => {
 		const nextMove = moves[index + 1] || "";
 		const bg_color =
@@ -64,7 +89,9 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-	jumpToMove: jumpToMove,
+	resetBoard: resetBoard,
+	handleGapClick: handleGapClick,
+	handlePawnShadowClick: handlePawnShadowClick,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoveList);

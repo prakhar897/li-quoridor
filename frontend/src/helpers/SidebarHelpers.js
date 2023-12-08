@@ -18,3 +18,50 @@ export const convertPGNToMoves = (pgn) => {
 	}
 	return moves;
 };
+
+export const convertNotationToMove = (notation) => {
+	let move = {
+		type: "",
+		payload: {
+			rowIndex: -1,
+			colIndex: -1,
+		},
+	};
+
+	if (notation.length === 2) {
+		move.type = "PAWN";
+		move.payload = convertNotationToPawnMove(notation);
+	} else {
+		move.type = "WALL";
+		move.payload = convertNotationtoAddingWalls(notation);
+	}
+	return move;
+};
+
+export const convertNotationToPawnMove = (notation) => {
+	let colIndex = notation.charCodeAt(0) - 97;
+	let rowIndex = 9 - parseInt(notation[1]);
+
+	return {
+		colIndex: colIndex * 2,
+		rowIndex: rowIndex * 2,
+	};
+};
+
+export const convertNotationtoAddingWalls = (notation) => {
+	let alphabet = notation.charAt(0);
+	let numeral = parseInt(notation.charAt(1));
+	let direction = notation.charAt(2);
+
+	let rowIndex, colIndex;
+
+	if (direction === "h") {
+		rowIndex = (9 - numeral) * 2;
+		colIndex = (alphabet.charCodeAt(0) - 97) * 2;
+	} else if (direction === "v") {
+		rowIndex = (9 - numeral) * 2 - 4;
+		colIndex = (alphabet.charCodeAt(0) - 97) * 2;
+	}
+
+	return { rowIndex: rowIndex, colIndex: colIndex };
+};
