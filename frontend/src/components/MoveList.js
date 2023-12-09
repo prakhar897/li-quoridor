@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { connect } from "react-redux";
 import { COLOR_CONSTANTS } from "../constants";
 import { resetBoard } from "../actions/SidebarAction";
 import { handleGapClick, bulkUpdateState } from "../actions/BoardAction";
 
 const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
+	const messagesEndRef = useRef(null);
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [moves]);
 	const jumpToMove = (moveIndex) => {
 		const newMoves = moves.splice(0, moveIndex + 1);
 		resetBoard();
@@ -20,6 +29,7 @@ const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
 			<div
 				key={index}
 				className={`flex justify-between p-1 border ${bg_color}`}
+				ref={index === moves.length - 3 ? messagesEndRef : null}
 			>
 				<span className="w-1/2 text-center ">{index / 2 + 1}.</span>
 				<div className="w-1/2 text-center">

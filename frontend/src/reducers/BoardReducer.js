@@ -364,12 +364,13 @@ const boardReducer = (state = initialState, action) => {
 		case "BULK_UPDATE_STATE": {
 			const newMoves = action.payload.moves;
 			const finalPawnPositions = {};
-			console.log(state);
 
 			const newWalls = {};
 
 			for (let pawn in state.pawns) {
-				finalPawnPositions[state.pawns[pawn].id] = state.pawns[pawn];
+				finalPawnPositions[state.pawns[pawn].id] = {
+					...state.pawns[pawn],
+				};
 			}
 
 			for (let index = 0; index < newMoves.length; index++) {
@@ -402,7 +403,7 @@ const boardReducer = (state = initialState, action) => {
 								wall.position.colIndex
 						] = tempWall;
 					}
-					console.log(finalPawnPositions);
+
 					finalPawnPositions[index % 2].wallCount -= 1;
 				}
 			}

@@ -8,6 +8,10 @@ import {
 	setPgn,
 	toggleIsPGNCopied,
 } from "../actions/SidebarAction";
+
+import { bulkUpdateState } from "../actions/BoardAction";
+
+import { convertPGNToMoves } from "../helpers/SidebarHelpers";
 import MoveList from "../components/MoveList";
 import { XIcon } from "@heroicons/react/solid";
 
@@ -22,10 +26,12 @@ const Sidebar = ({
 	setPgn,
 	toggleIsPGNCopied,
 	moves,
+	bulkUpdateState,
 }) => {
 	const handleImport = () => {
-		importBoard(pgn);
-		toggleImportExportPopup();
+		const newMoves = convertPGNToMoves(pgn);
+		resetBoard();
+		bulkUpdateState(newMoves);
 	};
 	// todo: copy clipboard doesnt work
 	const handleExport = () => {
@@ -41,7 +47,7 @@ const Sidebar = ({
 	return (
 		<>
 			<MoveList />
-			<div className="h-full flex flex-col items-center justify-center">
+			<div className="h-fit flex flex-col items-center justify-center">
 				<button
 					className="cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg border-blue-600
 							border-b-[4px] hover:brightness-110 mx-auto w-80
@@ -115,6 +121,7 @@ const mapDispatchToProps = {
 	toggleImportExportPopup: toggleImportExportPopup,
 	setPgn: setPgn,
 	toggleIsPGNCopied: toggleIsPGNCopied,
+	bulkUpdateState: bulkUpdateState,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

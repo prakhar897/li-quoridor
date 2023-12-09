@@ -31,7 +31,6 @@ const sidebarReducer = (state = initialState, action) => {
 
 		case "EXPORT_BOARD": {
 			const pgn = convertMovesToPGN(action.payload.moves);
-			console.log(pgn);
 			return { ...state, pgn: pgn };
 		}
 
