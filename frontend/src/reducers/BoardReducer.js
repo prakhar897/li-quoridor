@@ -6,22 +6,16 @@ import {
 	convertAddingWalltoNotation,
 } from "../helpers/BoardHelpers";
 
-import { convertPGNToMoves } from "../helpers/SidebarHelpers";
+import {
+	convertPGNToMoves,
+	convertNotationToPawnMove,
+	convertNotationtoAddingWalls,
+} from "../helpers/SidebarHelpers";
 
 const initialState = {
 	pawns: {
-		"0,8": {
-			id: 0,
-			position: {
-				rowIndex: 0,
-				colIndex: 8,
-			},
-			isClicked: false,
-			isShadow: false,
-			goalRow: 16,
-		},
 		"16,8": {
-			id: 1,
+			id: 0,
 			position: {
 				rowIndex: 16,
 				colIndex: 8,
@@ -30,11 +24,21 @@ const initialState = {
 			isShadow: false,
 			goalRow: 0,
 		},
+		"0,8": {
+			id: 1,
+			position: {
+				rowIndex: 0,
+				colIndex: 8,
+			},
+			isClicked: false,
+			isShadow: false,
+			goalRow: 16,
+		},
 	},
 	walls: {},
 	moves: [],
 	boardId: 0,
-	turn: 1,
+	turn: 0,
 };
 
 // var sampleState = {
@@ -335,6 +339,65 @@ const boardReducer = (state = initialState, action) => {
 				walls: newWalls,
 				moves: newMoves,
 				turn: state.turn === 1 ? 0 : 1,
+			};
+		}
+
+		case "BULK_UPDATE_STATE": {
+			const newMoves = action.payload.moves;
+			const finalPawnPositions = {};
+
+			const newWalls = {};
+
+			for (let pawn in state.pawns) {
+				finalPawnPositions[state.pawns[pawn].id] = state.pawns[pawn];
+			}
+
+			for (let index = 0; index < newMoves.length; index++) {
+				const move = newMoves[index];
+				if (move.length === 2) {
+					let newPos = convertNotationToPawnMove(move);
+
+					finalPawnPositions[index % 2] = {
+						...finalPawnPositions[index % 2],
+						position: newPos,
+					};
+				} else {
+					let walls = convertNotationtoAddingWalls(move);
+					for (let wall of walls) {
+						let tempWall = {
+							id:
+								CONSTANTS.BOARD_SIZE * wall.position.rowIndex +
+								wall.position.colIndex,
+							position: {
+								rowIndex: wall.position.rowIndex,
+								colIndex: wall.position.colIndex,
+							},
+							isShadow: false,
+						};
+
+						newWalls[
+							wall.position.rowIndex +
+								"," +
+								wall.position.colIndex
+						] = tempWall;
+					}
+				}
+			}
+
+			let newPawns = {};
+			for (let pawnIndex in finalPawnPositions) {
+				let pawn = finalPawnPositions[pawnIndex];
+				newPawns[
+					pawn.position.rowIndex + "," + pawn.position.colIndex
+				] = finalPawnPositions[pawn.id];
+			}
+
+			return {
+				...state,
+				moves: newMoves,
+				pawns: newPawns,
+				walls: newWalls,
+				turn: newMoves.length % 2,
 			};
 		}
 

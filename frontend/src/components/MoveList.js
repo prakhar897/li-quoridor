@@ -2,31 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import { COLOR_CONSTANTS } from "../constants";
 import { resetBoard } from "../actions/SidebarAction";
-import { handleGapClick, handlePawnShadowClick } from "../actions/BoardAction";
-import { convertNotationToMove } from "../helpers/SidebarHelpers";
+import { handleGapClick, bulkUpdateState } from "../actions/BoardAction";
 
-const MoveList = ({
-	moves,
-	resetBoard,
-	handleGapClick,
-	handlePawnShadowClick,
-}) => {
+const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
 	const jumpToMove = (moveIndex) => {
 		const newMoves = moves.splice(0, moveIndex + 1);
 		resetBoard();
-		for (let moveNotation of newMoves) {
-			console.log(moveNotation);
-			let move = convertNotationToMove(moveNotation);
-			console.log(move);
-			if (move.type === "PAWN") {
-				handleGapClick(move.payload.rowIndex, move.payload.colIndex);
-			} else {
-				handlePawnShadowClick(
-					move.payload.rowIndex,
-					move.payload.colIndex
-				);
-			}
-		}
+		bulkUpdateState(newMoves);
 	};
 
 	const renderMoveItem = (move, index) => {
@@ -91,7 +73,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
 	resetBoard: resetBoard,
 	handleGapClick: handleGapClick,
-	handlePawnShadowClick: handlePawnShadowClick,
+	bulkUpdateState: bulkUpdateState,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoveList);

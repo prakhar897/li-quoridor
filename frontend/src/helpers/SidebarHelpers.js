@@ -54,14 +54,34 @@ export const convertNotationtoAddingWalls = (notation) => {
 	let direction = notation.charAt(2);
 
 	let rowIndex, colIndex;
+	let walls = [];
 
 	if (direction === "h") {
 		rowIndex = (9 - numeral) * 2;
 		colIndex = (alphabet.charCodeAt(0) - 97) * 2;
+		walls.push({
+			position: { rowIndex: rowIndex - 1, colIndex: colIndex },
+		});
+
+		walls.push({
+			position: { rowIndex: rowIndex - 1, colIndex: colIndex + 1 },
+		});
+		walls.push({
+			position: { rowIndex: rowIndex - 1, colIndex: colIndex + 2 },
+		});
 	} else if (direction === "v") {
-		rowIndex = (9 - numeral) * 2 - 4;
+		rowIndex = (9 - numeral) * 2;
 		colIndex = (alphabet.charCodeAt(0) - 97) * 2;
+		walls.push({
+			position: { rowIndex: rowIndex, colIndex: colIndex + 1 },
+		});
+		walls.push({
+			position: { rowIndex: rowIndex - 2, colIndex: colIndex + 1 },
+		});
+		walls.push({
+			position: { rowIndex: rowIndex - 1, colIndex: colIndex + 1 },
+		});
 	}
 
-	return { rowIndex: rowIndex, colIndex: colIndex };
+	return walls;
 };

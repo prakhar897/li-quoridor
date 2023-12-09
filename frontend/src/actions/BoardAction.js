@@ -20,9 +20,18 @@ export const togglePawn = (rowIndex, colIndex) => {
 	};
 };
 
-export const handlePawnShadowClick = (rowIndex, colIndex) => {
+export const movePawn = (rowIndex, colIndex) => {
 	return {
 		type: "PAWN_SHADOW_CLICK",
 		payload: { rowIndex, colIndex },
+	};
+};
+
+export const bulkUpdateState = (moves) => {
+	return {
+		type: "BULK_UPDATE_STATE",
+		payload: {
+			moves: moves,
+		},
 	};
 };
