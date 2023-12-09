@@ -23,6 +23,7 @@ const initialState = {
 			isClicked: false,
 			isShadow: false,
 			goalRow: 0,
+			wallCount: 10,
 		},
 		"0,8": {
 			id: 1,
@@ -33,6 +34,7 @@ const initialState = {
 			isClicked: false,
 			isShadow: false,
 			goalRow: 16,
+			wallCount: 10,
 		},
 	},
 	walls: {},
@@ -217,6 +219,7 @@ const boardReducer = (state = initialState, action) => {
 
 			let parentId = newPawns[parentPieceKey].id;
 			let goalRow = newPawns[parentPieceKey].goalRow;
+			let wallCount = newPawns[parentPieceKey].wallCount;
 			delete newPawns[parentPieceKey];
 
 			const validPawnMoves = getValidPawnMoves(state.pawns, state.walls, {
@@ -239,6 +242,7 @@ const boardReducer = (state = initialState, action) => {
 				isClicked: false,
 				isShadow: false,
 				goalRow: goalRow,
+				wallCount: wallCount,
 				parentPosition: {},
 			};
 
@@ -317,6 +321,19 @@ const boardReducer = (state = initialState, action) => {
 			const newWalls = { ...state.walls };
 			const onlyNewWalls = {};
 
+			const newPawns = { ...state.pawns };
+			for (let pawnKey in newPawns) {
+				if (newPawns[pawnKey].id === state.turn) {
+					if (newPawns[pawnKey].wallCount === 0) {
+						return state;
+					}
+					newPawns[pawnKey] = {
+						...newPawns[pawnKey],
+						wallCount: newPawns[pawnKey].wallCount - 1,
+					};
+				}
+			}
+
 			for (const [rowIndex, colIndex] of validWalls) {
 				const pieceKey = rowIndex + "," + colIndex;
 				const newWall = {
@@ -326,6 +343,7 @@ const boardReducer = (state = initialState, action) => {
 						colIndex,
 					},
 					isShadow: false,
+					owner: state.turn,
 				};
 				onlyNewWalls[pieceKey] = newWall;
 				newWalls[pieceKey] = newWall;
@@ -337,6 +355,7 @@ const boardReducer = (state = initialState, action) => {
 			return {
 				...state,
 				walls: newWalls,
+				pawns: newPawns,
 				moves: newMoves,
 				turn: state.turn === 1 ? 0 : 1,
 			};
@@ -345,6 +364,7 @@ const boardReducer = (state = initialState, action) => {
 		case "BULK_UPDATE_STATE": {
 			const newMoves = action.payload.moves;
 			const finalPawnPositions = {};
+			console.log(state);
 
 			const newWalls = {};
 
@@ -373,6 +393,7 @@ const boardReducer = (state = initialState, action) => {
 								colIndex: wall.position.colIndex,
 							},
 							isShadow: false,
+							owner: index % 2,
 						};
 
 						newWalls[
@@ -381,6 +402,8 @@ const boardReducer = (state = initialState, action) => {
 								wall.position.colIndex
 						] = tempWall;
 					}
+					console.log(finalPawnPositions);
+					finalPawnPositions[index % 2].wallCount -= 1;
 				}
 			}
 

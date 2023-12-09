@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 
-const ProfileBox = () => {
+const ProfileBox = ({ wallcount, username }) => {
 	return (
 		<div className="flex items-center justify-between h-16 bg-gray-100 p-4">
 			<div className="flex items-center space-x-4">
@@ -13,7 +13,7 @@ const ProfileBox = () => {
 					/>
 				</div>
 				<div className="flex flex-col">
-					<div className="text-sm font-semibold">Username</div>
+					<div className="text-sm font-semibold">{username}</div>
 					<div className="flex items-center space-x-1">
 						<div className="w-4 h-4 rounded-sm overflow-hidden">
 							<img
@@ -33,7 +33,7 @@ const ProfileBox = () => {
 			<div className="flex items-center space-x-2">
 				<div className="flex items-center space-x-1">
 					<span className="text-xs">Walls:</span>
-					<span className="text-xs">8</span>
+					<span className="text-xs">{wallcount}</span>
 				</div>
 				<div className="flex items-center space-x-1">
 					<svg
