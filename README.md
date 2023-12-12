@@ -29,3 +29,5 @@ https://www.tiktok.com/@games4two/video/7196715975931137323?lang=en
 https://www.youtube.com/shorts/QHkXxJGFrZM
 
 share gif feature
+
+https://www.chess.com/news/view/published-data-api
