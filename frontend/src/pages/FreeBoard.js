@@ -5,8 +5,21 @@ import ProfileBox from "../components/ProfileBox";
 
 import { connect } from "react-redux";
 
+import {
+	handleGapClick,
+	handleMouseEnteringGap,
+	handleMouseLeavingGap,
+} from "../actions/BoardAction";
+
 import Navbar from "../components/Navbar";
-const FreeBoard = ({ game, board }) => {
+
+const FreeBoard = ({
+	game,
+	board,
+	handleGapClick,
+	handleMouseEnteringGap,
+	handleMouseLeavingGap,
+}) => {
 	const getWallCount = (id) => {
 		for (let pawnKey in board.pawns) {
 			let pawn = board.pawns[pawnKey];
@@ -17,10 +30,6 @@ const FreeBoard = ({ game, board }) => {
 		}
 	};
 
-	const getUsername = (id) => {
-		return game.pawnPlayerMap[id];
-	};
-
 	return (
 		<div className="grid grid-cols-10 h-screen">
 			<div className="col-span-1 bg-gray-600">
@@ -29,24 +38,23 @@ const FreeBoard = ({ game, board }) => {
 				</div>
 			</div>
 
-			<div className="col-span-6 bg-gray-400 h-screen w-full">
-				<div className="grid grid-rows-10 w-full h-screen bg-gray-400">
-					<div className="row-span-1">
-						<ProfileBox
-							wallcount={getWallCount(1)}
-							username={getUsername(1)}
-						/>
-					</div>
+			<div className="col-span-6 bg-gray-100 h-screen w-full flex flex-col justify-center items-center">
+				<div>
+					<Board
+						handleGapClick={handleGapClick}
+						handleMouseEnteringGap={handleMouseEnteringGap}
+						handleMouseLeavingGap={handleMouseLeavingGap}
+					/>
+				</div>
 
-					<div className="row-span-8">
-						<Board />
+				<div className="flex items-center space-x-6 mt-4 text-xl border-b border-stone-800">
+					<div className="font-bold text-stone-800 ">
+						WHITE:{" "}
+						<span className="text-3xl">{getWallCount(0)} </span>
 					</div>
-
-					<div className="row-span-1 align-bottom">
-						<ProfileBox
-							wallcount={getWallCount(0)}
-							username={getUsername(0)}
-						/>
+					<div className="font-bold text-stone-800">
+						BLACK:
+						<span className="text-3xl">{getWallCount(1)} </span>
 					</div>
 				</div>
 			</div>
@@ -62,4 +70,10 @@ const mapStateToProps = (state) => ({
 	board: state.board,
 });
 
-export default connect(mapStateToProps, null)(FreeBoard);
+const mapDispatchToProps = {
+	handleGapClick: handleGapClick,
+	handleMouseEnteringGap: handleMouseEnteringGap,
+	handleMouseLeavingGap: handleMouseLeavingGap,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FreeBoard);

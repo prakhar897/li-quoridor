@@ -6,12 +6,6 @@ import CONSTANTS from "../constants";
 import Pawn from "./Pawn";
 import Wall from "./Wall";
 
-import {
-	handleGapClick,
-	handleMouseEnteringGap,
-	handleMouseLeavingGap,
-} from "../actions/BoardAction";
-
 const BOARD_SIZE = CONSTANTS.BOARD_SIZE;
 
 const BG_GAP_COLOR = "bg-stone-400";
@@ -24,14 +18,37 @@ const Board = ({
 	handleMouseEnteringGap,
 	handleMouseLeavingGap,
 	turn,
+	players,
 }) => {
 	const renderCellContent = (rowIndex, colIndex) => {
 		const pieceKey = rowIndex + "," + colIndex;
 
 		if (pawns[pieceKey]) {
-			return <Pawn {...pawns[pieceKey]} turn={turn} />;
+			const pawnId = pawns[pieceKey].id;
+			return (
+				<Pawn
+					{...pawns[pieceKey]}
+					turn={turn}
+					pawnDesign={
+						!pawns[pieceKey].isShadow
+							? players[pawnId].pawn_design
+							: undefined
+					}
+				/>
+			);
 		} else if (walls[pieceKey]) {
-			return <Wall {...walls[pieceKey]} />;
+			const wallOwnerId = walls[pieceKey].owner;
+
+			return (
+				<Wall
+					{...walls[pieceKey]}
+					pawnDesign={
+						!walls[pieceKey].isShadow
+							? players[wallOwnerId].pawn_design
+							: undefined
+					}
+				/>
+			);
 		}
 		return null;
 	};
@@ -40,7 +57,7 @@ const Board = ({
 		return (
 			<div
 				key={colIndex}
-				className={` ${BG_TILE_COLOR} w-10 h-10 opacity-30`}
+				className={` ${BG_TILE_COLOR} w-10 h-10 bg-opacity-30 z-0 flex items-center justify-center`}
 			>
 				{renderCellContent(rowIndex, colIndex, cell)}
 			</div>
@@ -178,12 +195,7 @@ const mapStateToProps = (state) => ({
 	pawns: state.board.pawns,
 	walls: state.board.walls,
 	turn: state.board.turn,
+	players: state.game.players,
 });
 
-const mapDispatchToProps = {
-	handleGapClick: handleGapClick,
-	handleMouseEnteringGap: handleMouseEnteringGap,
-	handleMouseLeavingGap: handleMouseLeavingGap,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Board);
+export default connect(mapStateToProps, null)(Board);

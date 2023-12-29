@@ -1,26 +1,37 @@
 const initialState = {
 	boardId: null,
 	noOfPlayers: 2,
-	players: {
-		username1: {
+	players: [
+		{
 			handle: "username1",
 			elo: 1000,
 			profile_pic: "img_link",
+			pawn_design: {
+				color: "white",
+			},
 		},
-		username2: {
+		{
 			handle: "username2",
 			elo: 1000,
 			profile_pic: "img_link",
+			pawn_design: {
+				color: "black",
+			},
 		},
-	},
-	pawnPlayerMap: {
-		0: "username1",
-		1: "username2",
-	},
+	],
+	myPlayerId: null,
 };
 
 const gameReducer = (state = initialState, action) => {
 	switch (action.type) {
+		case "START_GAME": {
+			return { ...state, myPlayerId: action.payload.myPlayerId };
+		}
+
+		case "END_GAME": {
+			return state;
+		}
+
 		default:
 			return state;
 	}

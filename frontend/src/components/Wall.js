@@ -11,10 +11,12 @@ import { connect } from "react-redux";
 // 			isShadow: false,
 // 		},
 
-const Wall = ({ id, position, isShadow }) => {
-	const shadowColor = isShadow ? "bg-black opacity-30" : "bg-black";
+const Wall = ({ pawnDesign, isShadow }) => {
+	const wallColor = isShadow
+		? "bg-black bg-opacity-40"
+		: "bg-opacity-80 bg-" + pawnDesign.color;
 
-	return <div className={`${shadowColor} w-full h-full`}></div>;
+	return <div className={`${wallColor} w-full h-full`}></div>;
 };
 
 export default connect(null, null)(Wall);

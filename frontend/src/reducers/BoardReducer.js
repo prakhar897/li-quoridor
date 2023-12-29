@@ -39,12 +39,10 @@ const initialState = {
 	},
 	walls: {},
 	moves: [],
-	boardId: 0,
 	turn: 0,
 };
 
 // var sampleState = {
-// 	boardId: 0,
 // 	moves: ["e2", "e8", "e1", "e7", "e4h", "h6v", "h5v"],
 // 	pawns: {
 // 		"0,8": {
