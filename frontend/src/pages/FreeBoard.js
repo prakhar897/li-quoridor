@@ -1,7 +1,6 @@
 import React from "react";
 import Board from "../components/Board";
 import Sidebar from "../components/Sidebar";
-import ProfileBox from "../components/ProfileBox";
 
 import { connect } from "react-redux";
 
@@ -38,7 +37,7 @@ const FreeBoard = ({
 				</div>
 			</div>
 
-			<div className="col-span-6 bg-gray-100 h-screen w-full flex flex-col justify-center items-center">
+			<div className="col-span-6 bg-lime-50 h-screen w-full flex flex-col justify-center items-center">
 				<div>
 					<Board
 						handleGapClick={handleGapClick}
@@ -49,11 +48,11 @@ const FreeBoard = ({
 
 				<div className="flex items-center space-x-6 mt-4 text-xl border-b border-stone-800">
 					<div className="font-bold text-stone-800 ">
-						WHITE:{" "}
+						WHITE:{"  "}
 						<span className="text-3xl">{getWallCount(0)} </span>
 					</div>
 					<div className="font-bold text-stone-800">
-						BLACK:
+						BLACK:{"  "}
 						<span className="text-3xl">{getWallCount(1)} </span>
 					</div>
 				</div>

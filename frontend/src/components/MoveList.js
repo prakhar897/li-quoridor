@@ -4,7 +4,7 @@ import { COLOR_CONSTANTS } from "../constants";
 import { resetBoard } from "../actions/SidebarAction";
 import { handleGapClick, bulkUpdateState } from "../actions/BoardAction";
 
-const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
+const MoveList = ({ moves, resetBoard, bulkUpdateState, currentMoveNo }) => {
 	const messagesEndRef = useRef(null);
 
 	const scrollToBottom = () => {
@@ -20,10 +20,13 @@ const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
 		bulkUpdateState(newMoves);
 	};
 
-	const renderMoveItem = (move, index) => {
+	const renderMoveItem = (move, index, currentMoveNo) => {
 		const nextMove = moves[index + 1] || "";
 		const bg_color =
 			COLOR_CONSTANTS.MOVE_LIST_BG[Math.floor(index / 2) % 2];
+		const current_move_bg = currentMoveNo - 1 === index ? "bg-red-500" : "";
+		const current_move_bg2 =
+			currentMoveNo - 1 === index + 1 ? "bg-red-500" : "";
 
 		return (
 			<div
@@ -32,17 +35,17 @@ const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
 				ref={index === moves.length - 3 ? messagesEndRef : null}
 			>
 				<span className="w-1/2 text-center ">{index / 2 + 1}.</span>
-				<div className="w-1/2 text-center">
+				<div className={`w-1/2 text-center ${current_move_bg}`}>
 					<span
-						className="cursor-pointer "
+						className={`cursor-pointer `}
 						onClick={() => jumpToMove(index)}
 					>
 						{move}
 					</span>
 				</div>
-				<div className="w-1/2 text-center">
+				<div className={`w-1/2 text-center ${current_move_bg2}`}>
 					<span
-						className="cursor-pointer "
+						className={`cursor-pointer`}
 						onClick={() => jumpToMove(index + 1)}
 					>
 						{nextMove}
@@ -67,7 +70,7 @@ const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
 			<div className={`flex flex-col justify-end`}>
 				{moves.map((move, index) => {
 					if (index % 2 === 0) {
-						return renderMoveItem(move, index);
+						return renderMoveItem(move, index, currentMoveNo);
 					}
 					return null;
 				})}
@@ -78,6 +81,7 @@ const MoveList = ({ moves, resetBoard, handleGapClick, bulkUpdateState }) => {
 
 const mapStateToProps = (state) => ({
 	moves: state.board.moves,
+	currentMoveNo: state.board.currentMoveNo,
 });
 
 const mapDispatchToProps = {

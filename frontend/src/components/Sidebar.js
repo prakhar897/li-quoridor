@@ -47,11 +47,11 @@ const Sidebar = ({
 	return (
 		<>
 			<MoveList />
-			<div className="h-fit flex flex-col items-center justify-center">
+			<div className="h-fit flex flex-col items-center justify-center mt-6">
 				<button
 					className="cursor-pointer transition-all bg-blue-500 text-white px-6 py-2 rounded-lg border-blue-600
 							border-b-[4px] hover:brightness-110 mx-auto w-80
-							active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+							active:border-b-[2px] active:brightness-90 active:translate-y-[2px] mt-1 mb-1"
 					onClick={() => resetBoard()}
 				>
 					Reset Board
@@ -59,7 +59,7 @@ const Sidebar = ({
 				<button
 					className="cursor-pointer transition-all bg-red-500 text-white px-6 py-2 rounded-lg border-red-600
 							border-b-[4px] hover:brightness-110 mx-auto w-80
-							active:border-b-[2px] active:brightness-90 active:translate-y-[2px]"
+							active:border-b-[2px] active:brightness-90 active:translate-y-[2px] mt-1 mb-1"
 					onClick={() => toggleImportExportPopup()}
 				>
 					Import/Export

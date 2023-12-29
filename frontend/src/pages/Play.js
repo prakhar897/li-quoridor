@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Board from "../components/Board";
 import Sidebar from "../components/Sidebar";
 import PlaySideBar from "../components/PlaySidebar";
@@ -22,22 +22,6 @@ const Play = ({
 	handleMouseLeavingGap,
 }) => {
 	const [inGame, setInGame] = useState(false);
-
-	// useEffect(() => {
-	// 	socket.on("startGame", (data) => {
-	// 		setInGame(true);
-	// 		setColor(data.color);
-	// 	});
-
-	// 	socket.on("move", (data) => {
-	// 		handleMove(data.position);
-	// 	});
-	// }, []);
-
-	// const handleMove = (position) => {
-	// 	// Logic to handle player move and emit to server
-	// 	socket.emit("move", { position });
-	// };
 
 	const getWallCount = (id) => {
 		for (let pawnKey in board.pawns) {

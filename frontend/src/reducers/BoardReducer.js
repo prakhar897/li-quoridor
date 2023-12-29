@@ -39,6 +39,7 @@ const initialState = {
 	},
 	walls: {},
 	moves: [],
+	currentMoveNo: 0,
 	turn: 0,
 };
 
@@ -96,6 +97,7 @@ const initialState = {
 // 				colIndex: 9,
 // 			},
 // 			isShadow: false,
+//          wallOwner: 1
 // 		},
 // 		"14,9": {
 // 			id: 1,
@@ -249,6 +251,7 @@ const boardReducer = (state = initialState, action) => {
 				pawns: newPawns,
 				moves: newMoves,
 				turn: state.turn === 1 ? 0 : 1,
+				currentMoveNo: state.currentMoveNo + 1,
 			};
 		}
 
@@ -356,6 +359,7 @@ const boardReducer = (state = initialState, action) => {
 				pawns: newPawns,
 				moves: newMoves,
 				turn: state.turn === 1 ? 0 : 1,
+				currentMoveNo: state.currentMoveNo + 1,
 			};
 		}
 
@@ -420,6 +424,7 @@ const boardReducer = (state = initialState, action) => {
 				pawns: newPawns,
 				walls: newWalls,
 				turn: newMoves.length % 2,
+				currentMoveNo: newMoves.length,
 			};
 		}
 
