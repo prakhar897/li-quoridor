@@ -7,6 +7,7 @@ import HowToPlay from "./pages/HowToPlay";
 import { connect } from "react-redux";
 
 import { socketConnected, socketDisconnected } from "./actions/socketActions";
+import "./App.css";
 
 const App = ({ socketConnected, socketDisconnected }) => {
 	useEffect(() => {

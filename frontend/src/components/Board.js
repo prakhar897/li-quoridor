@@ -17,7 +17,7 @@ const Board = ({
 	handleGapClick,
 	handleMouseEnteringGap,
 	handleMouseLeavingGap,
-	turn,
+	currentMoveNo,
 	players,
 }) => {
 	const renderCellContent = (rowIndex, colIndex) => {
@@ -28,7 +28,7 @@ const Board = ({
 			return (
 				<Pawn
 					{...pawns[pieceKey]}
-					turn={turn}
+					currentMoveNo={currentMoveNo}
 					pawnDesign={
 						!pawns[pieceKey].isShadow
 							? players[pawnId].pawn_design
@@ -194,8 +194,9 @@ const Board = ({
 const mapStateToProps = (state) => ({
 	pawns: state.board.pawns,
 	walls: state.board.walls,
-	turn: state.board.turn,
+	currentMoveNo: state.board.currentMoveNo,
 	players: state.game.players,
+	moves: state.board.moves,
 });
 
 export default connect(mapStateToProps, null)(Board);

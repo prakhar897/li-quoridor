@@ -7,6 +7,27 @@ import { handleGapClick, bulkUpdateState } from "../actions/BoardAction";
 const MoveList = ({ moves, resetBoard, bulkUpdateState, currentMoveNo }) => {
 	const messagesEndRef = useRef(null);
 
+	const handleKeyDown = (event) => {
+		if (event.keyCode === 37) {
+			// Left arrow key
+			resetBoard();
+			bulkUpdateState(moves, currentMoveNo - 2);
+		} else if (event.keyCode === 39) {
+			// Right arrow key
+			if (moves.length - 1 !== currentMoveNo) {
+				resetBoard();
+				bulkUpdateState(moves, currentMoveNo);
+			}
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener("keydown", handleKeyDown);
+		return () => {
+			window.removeEventListener("keydown", handleKeyDown);
+		};
+	});
+
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
@@ -15,9 +36,9 @@ const MoveList = ({ moves, resetBoard, bulkUpdateState, currentMoveNo }) => {
 		scrollToBottom();
 	}, [moves]);
 	const jumpToMove = (moveIndex) => {
-		const newMoves = moves.splice(0, moveIndex + 1);
 		resetBoard();
-		bulkUpdateState(newMoves);
+
+		bulkUpdateState(moves, moveIndex);
 	};
 
 	const renderMoveItem = (move, index, currentMoveNo) => {

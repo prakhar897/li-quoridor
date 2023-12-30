@@ -40,7 +40,6 @@ const initialState = {
 	walls: {},
 	moves: [],
 	currentMoveNo: 0,
-	turn: 0,
 };
 
 // var sampleState = {
@@ -136,7 +135,7 @@ const boardReducer = (state = initialState, action) => {
 
 			if (
 				!state.pawns[parentPieceKey] ||
-				state.pawns[parentPieceKey].id !== state.turn
+				state.pawns[parentPieceKey].id !== state.currentMoveNo % 2
 			) {
 				return state;
 			}
@@ -194,7 +193,11 @@ const boardReducer = (state = initialState, action) => {
 				"," +
 				newPawns[shadowPieceKey].parentPostion.colIndex;
 
-			let newMoves = [...state.moves];
+			const newMoves = [...state.moves].splice(
+				0,
+				state.currentMoveNo + 1
+			);
+			console.log(newMoves);
 			newMoves.push(
 				convertPawnMoveToNotation(
 					{
@@ -212,7 +215,7 @@ const boardReducer = (state = initialState, action) => {
 
 			if (
 				!state.pawns[parentPieceKey] ||
-				state.pawns[parentPieceKey].id !== state.turn
+				state.pawns[parentPieceKey].id !== state.currentMoveNo % 2
 			) {
 				return state;
 			}
@@ -250,7 +253,6 @@ const boardReducer = (state = initialState, action) => {
 				...state,
 				pawns: newPawns,
 				moves: newMoves,
-				turn: state.turn === 1 ? 0 : 1,
 				currentMoveNo: state.currentMoveNo + 1,
 			};
 		}
@@ -324,7 +326,7 @@ const boardReducer = (state = initialState, action) => {
 
 			const newPawns = { ...state.pawns };
 			for (let pawnKey in newPawns) {
-				if (newPawns[pawnKey].id === state.turn) {
+				if (newPawns[pawnKey].id === state.currentMoveNo % 2) {
 					if (newPawns[pawnKey].wallCount === 0) {
 						return state;
 					}
@@ -344,27 +346,38 @@ const boardReducer = (state = initialState, action) => {
 						colIndex,
 					},
 					isShadow: false,
-					owner: state.turn,
+					owner: state.currentMoveNo % 2,
 				};
 				onlyNewWalls[pieceKey] = newWall;
 				newWalls[pieceKey] = newWall;
 			}
 
-			const newMoves = [...state.moves];
-			newMoves.push(convertAddingWalltoNotation(onlyNewWalls));
+			const wallNotation = convertAddingWalltoNotation(onlyNewWalls);
+
+			const newMoves = [...state.moves].splice(
+				0,
+				state.currentMoveNo + 1
+			);
+			console.log(newMoves);
+
+			newMoves.push(wallNotation);
 
 			return {
 				...state,
 				walls: newWalls,
 				pawns: newPawns,
 				moves: newMoves,
-				turn: state.turn === 1 ? 0 : 1,
 				currentMoveNo: state.currentMoveNo + 1,
 			};
 		}
 
 		case "BULK_UPDATE_STATE": {
 			const newMoves = action.payload.moves;
+			let moveIndex = action.payload.moveIndex;
+			if (moveIndex === -1) {
+				moveIndex = newMoves.length - 1;
+			}
+
 			const finalPawnPositions = {};
 
 			const newWalls = {};
@@ -375,8 +388,12 @@ const boardReducer = (state = initialState, action) => {
 				};
 			}
 
-			for (let index = 0; index < newMoves.length; index++) {
+			console.log(moveIndex);
+
+			for (let index = 0; index <= moveIndex; index++) {
 				const move = newMoves[index];
+				console.log(move);
+
 				if (move.length === 2) {
 					let newPos = convertNotationToPawnMove(move);
 
@@ -420,11 +437,10 @@ const boardReducer = (state = initialState, action) => {
 
 			return {
 				...state,
-				moves: newMoves,
+				moves: action.payload.moves,
 				pawns: newPawns,
 				walls: newWalls,
-				turn: newMoves.length % 2,
-				currentMoveNo: newMoves.length,
+				currentMoveNo: moveIndex + 1,
 			};
 		}
 

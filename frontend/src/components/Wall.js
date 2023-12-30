@@ -16,7 +16,16 @@ const Wall = ({ pawnDesign, isShadow }) => {
 		? "bg-black bg-opacity-40"
 		: "bg-opacity-80 bg-" + pawnDesign.color;
 
-	return <div className={`${wallColor} w-full h-full`}></div>;
+	return (
+		<div
+			className={`${wallColor} w-full h-full`}
+			style={
+				isShadow
+					? {}
+					: { animation: "placeWall 0.2s ease-in-out forwards" }
+			}
+		></div>
+	);
 };
 
 export default connect(null, null)(Wall);

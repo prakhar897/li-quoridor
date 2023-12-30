@@ -27,11 +27,12 @@ export const movePawn = (rowIndex, colIndex) => {
 	};
 };
 
-export const bulkUpdateState = (moves) => {
+export const bulkUpdateState = (moves, moveIndex = -1) => {
 	return {
 		type: "BULK_UPDATE_STATE",
 		payload: {
 			moves: moves,
+			moveIndex: moveIndex,
 		},
 	};
 };
