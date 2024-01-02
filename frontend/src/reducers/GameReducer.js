@@ -1,25 +1,16 @@
 const initialState = {
-	boardId: null,
-	noOfPlayers: 2,
-	players: [
-		{
-			handle: "username1",
-			elo: 1000,
-			profile_pic: "img_link",
-			pawn_design: {
-				color: "white",
-			},
-		},
-		{
-			handle: "username2",
-			elo: 1000,
-			profile_pic: "img_link",
-			pawn_design: {
-				color: "black",
-			},
-		},
-	],
-	myPlayerId: null,
+	id: "Disconnected-Board-Id",
+	black: {
+		handle: "Computer_Black",
+		elo: 1000,
+		profile_pic: "img_link",
+	},
+	white: {
+		handle: "Computer_White",
+		elo: 1000,
+		profile_pic: "img_link",
+	},
+	status: "disconnected",
 };
 
 const gameReducer = (state = initialState, action) => {

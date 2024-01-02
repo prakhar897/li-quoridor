@@ -11,12 +11,12 @@ const MoveList = ({ moves, resetBoard, bulkUpdateState, currentMoveNo }) => {
 		if (event.keyCode === 37) {
 			// Left arrow key
 			resetBoard();
-			bulkUpdateState(moves, currentMoveNo - 2);
+			bulkUpdateState(moves, currentMoveNo - 1);
 		} else if (event.keyCode === 39) {
 			// Right arrow key
 			if (moves.length - 1 !== currentMoveNo) {
 				resetBoard();
-				bulkUpdateState(moves, currentMoveNo);
+				bulkUpdateState(moves, currentMoveNo + 1);
 			}
 		}
 	};
@@ -38,7 +38,7 @@ const MoveList = ({ moves, resetBoard, bulkUpdateState, currentMoveNo }) => {
 	const jumpToMove = (moveIndex) => {
 		resetBoard();
 
-		bulkUpdateState(moves, moveIndex);
+		bulkUpdateState(moves, moveIndex + 1);
 	};
 
 	const renderMoveItem = (move, index, currentMoveNo) => {

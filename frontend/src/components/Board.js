@@ -24,31 +24,18 @@ const Board = ({
 		const pieceKey = rowIndex + "," + colIndex;
 
 		if (pawns[pieceKey]) {
-			const pawnId = pawns[pieceKey].id;
+			const pawnColor = pawns[pieceKey].id === 0 ? "white" : "black";
 			return (
 				<Pawn
 					{...pawns[pieceKey]}
 					currentMoveNo={currentMoveNo}
-					pawnDesign={
-						!pawns[pieceKey].isShadow
-							? players[pawnId].pawn_design
-							: undefined
-					}
+					pawnColor={pawnColor}
 				/>
 			);
 		} else if (walls[pieceKey]) {
-			const wallOwnerId = walls[pieceKey].owner;
+			const wallColor = walls[pieceKey].owner === 0 ? "white" : "black";
 
-			return (
-				<Wall
-					{...walls[pieceKey]}
-					pawnDesign={
-						!walls[pieceKey].isShadow
-							? players[wallOwnerId].pawn_design
-							: undefined
-					}
-				/>
-			);
+			return <Wall {...walls[pieceKey]} wallColor={wallColor} />;
 		}
 		return null;
 	};

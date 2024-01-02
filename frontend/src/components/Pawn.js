@@ -24,7 +24,7 @@ const Pawn = ({
 	currentMoveNo,
 	togglePawn,
 	movePawn,
-	pawnDesign,
+	pawnColor,
 }) => {
 	const turnHighlight =
 		currentMoveNo % 2 === id ? "border-2 border-amber-200" : "";
@@ -42,7 +42,7 @@ const Pawn = ({
 		return (
 			<div
 				className={`w-8 h-8 mx-auto rounded-full ${
-					"bg-" + pawnDesign.color
+					"bg-" + pawnColor
 				} ${turnHighlight} opacity-100`}
 				style={{
 					transition: "all 0.1s ease-in-out 0s",

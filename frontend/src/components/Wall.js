@@ -11,14 +11,14 @@ import { connect } from "react-redux";
 // 			isShadow: false,
 // 		},
 
-const Wall = ({ pawnDesign, isShadow }) => {
-	const wallColor = isShadow
+const Wall = ({ wallColor, isShadow }) => {
+	const wallColor2 = isShadow
 		? "bg-black bg-opacity-40"
-		: "bg-opacity-80 bg-" + pawnDesign.color;
+		: "bg-opacity-80 bg-" + wallColor;
 
 	return (
 		<div
-			className={`${wallColor} w-full h-full`}
+			className={`${wallColor2} w-full h-full`}
 			style={
 				isShadow
 					? {}

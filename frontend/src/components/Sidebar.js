@@ -31,7 +31,7 @@ const Sidebar = ({
 	const handleImport = () => {
 		const newMoves = convertPGNToMoves(pgn);
 		resetBoard();
-		bulkUpdateState(newMoves);
+		bulkUpdateState(newMoves, newMoves.length);
 	};
 	// todo: copy clipboard doesnt work
 	const handleExport = () => {
