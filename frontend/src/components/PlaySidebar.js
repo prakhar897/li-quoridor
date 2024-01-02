@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { joinQueue } from "../actions/GameAction";
+import { joinQueue } from "../actions/socketActions";
 import Spinner from "./Spinner";
 
 const PlaySideBar = ({ joinQueue }) => {

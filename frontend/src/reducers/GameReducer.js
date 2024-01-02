@@ -23,6 +23,12 @@ const gameReducer = (state = initialState, action) => {
 			return state;
 		}
 
+		case "UPDATE_MATCH_STATE": {
+			const match = action.payload.match;
+			console.log(match);
+			return state;
+		}
+
 		default:
 			return state;
 	}

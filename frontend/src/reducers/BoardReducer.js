@@ -452,6 +452,12 @@ const boardReducer = (state = initialState, action) => {
 			return { ...state, moves: newMoves };
 		}
 
+		case "UPDATE_MATCH_STATE": {
+			const match = action.payload.match;
+			console.log(match);
+			return state;
+		}
+
 		default:
 			return state;
 	}

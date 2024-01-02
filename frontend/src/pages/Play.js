@@ -33,10 +33,6 @@ const Play = ({
 		}
 	};
 
-	const getUsername = (id) => {
-		return game.players[id].username;
-	};
-
 	return (
 		<div className="grid grid-cols-10 h-screen">
 			<div className="col-span-1 bg-gray-600">
@@ -50,7 +46,7 @@ const Play = ({
 					<div className="row-span-1">
 						<ProfileBox
 							wallcount={getWallCount(1)}
-							username={getUsername(1)}
+							username={game.black.username}
 						/>
 					</div>
 
@@ -65,7 +61,7 @@ const Play = ({
 					<div className="row-span-1 align-bottom">
 						<ProfileBox
 							wallcount={getWallCount(0)}
-							username={getUsername(0)}
+							username={game.black.username}
 						/>
 					</div>
 				</div>
