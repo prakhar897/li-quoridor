@@ -22,6 +22,8 @@ const Play = ({
 	handleGapClick,
 	handleMouseEnteringGap,
 	handleMouseLeavingGap,
+	socketConnected,
+	socketDisconnected,
 }) => {
 	useEffect(() => {
 		socketConnected();
@@ -29,7 +31,7 @@ const Play = ({
 		return () => {
 			socketDisconnected();
 		};
-	}, [socketConnected, socketDisconnected]);
+	}, []);
 
 	const [inGame, setInGame] = useState(false);
 
