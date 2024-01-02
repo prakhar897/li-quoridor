@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Board from "../components/Board";
 import Sidebar from "../components/Sidebar";
 import PlaySideBar from "../components/PlaySidebar";
 import ProfileBox from "../components/ProfileBox";
+
+import { socketConnected, socketDisconnected } from "../actions/socketActions";
 
 import {
 	handleGapClick,
@@ -21,6 +23,14 @@ const Play = ({
 	handleMouseEnteringGap,
 	handleMouseLeavingGap,
 }) => {
+	useEffect(() => {
+		socketConnected();
+
+		return () => {
+			socketDisconnected();
+		};
+	}, [socketConnected, socketDisconnected]);
+
 	const [inGame, setInGame] = useState(false);
 
 	const getWallCount = (id) => {
@@ -83,6 +93,8 @@ const mapDispatchToProps = {
 	handleGapClick: handleGapClick,
 	handleMouseEnteringGap: handleMouseEnteringGap,
 	handleMouseLeavingGap: handleMouseLeavingGap,
+	socketConnected: socketConnected,
+	socketDisconnected: socketDisconnected,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Play);

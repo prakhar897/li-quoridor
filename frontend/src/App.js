@@ -1,23 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import FreeBoard from "./pages/FreeBoard";
 import Play from "./pages/Play";
 import HowToPlay from "./pages/HowToPlay";
 
 import { connect } from "react-redux";
-
-import { socketConnected, socketDisconnected } from "./actions/socketActions";
 import "./App.css";
 
 const App = ({ socketConnected, socketDisconnected }) => {
-	useEffect(() => {
-		socketConnected();
-
-		return () => {
-			socketDisconnected();
-		};
-	}, [socketConnected, socketDisconnected]);
-
 	return (
 		<Router>
 			<div className="App">
@@ -37,9 +27,6 @@ const mapStateToProps = (state) => ({
 	board: state.board,
 });
 
-const mapDispatchToProps = {
-	socketConnected: socketConnected,
-	socketDisconnected: socketDisconnected,
-};
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
