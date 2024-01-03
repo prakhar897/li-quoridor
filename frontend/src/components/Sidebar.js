@@ -65,6 +65,19 @@ const Sidebar = ({
 					Import/Export
 				</button>
 
+				<h2 className="text-center font-bold text-gray-200 mt-6 mb-6 mx-auto">
+					Fill{" "}
+					<a
+						href="https://forms.gle/5szCabDBJqUzNF5i8"
+						target="_blank"
+						rel="noreferrer"
+						className="text-center font-bold underline text-indigo-400"
+					>
+						this
+					</a>{" "}
+					form if you want to be notified when the game releases.
+				</h2>
+
 				{isImportExportPopupOpen && (
 					<div className="fixed inset-0 flex items-center justify-center">
 						<div className="bg-white p-6 rounded-lg w-1/2 h-1/2 relative">

@@ -28,3 +28,8 @@ export const updateMatchState = (match) => ({
 	type: "UPDATE_MATCH_STATE",
 	payload: { match: match },
 });
+
+export const UPDATE_MOVE = (move) => ({
+	type: "UPDATE_MOVE",
+	payload: { move: move },
+});

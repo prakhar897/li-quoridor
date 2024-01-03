@@ -10,7 +10,7 @@ const initialState = {
 		elo: 1000,
 		profile_pic: "img_link",
 	},
-	status: "disconnected",
+	status: "disconnected", //disconnected, connected, playing, ended, error
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -23,10 +23,29 @@ const gameReducer = (state = initialState, action) => {
 			return state;
 		}
 
-		case "UPDATE_MATCH_STATE": {
+		case "START_MATCH": {
 			const match = action.payload.match;
 			console.log(match);
-			return state;
+
+			const newWhite = {
+				handle: match.white.handle,
+				elo: match.white.elo,
+				profile_pic: match.white.profile_pic,
+			};
+
+			const newBlack = {
+				handle: match.black.handle,
+				elo: match.black.elo,
+				profile_pic: match.black.profile_pic,
+			};
+
+			return {
+				...state,
+				id: match.id,
+				white: newWhite,
+				black: newBlack,
+				status: "playing",
+			};
 		}
 
 		default:
