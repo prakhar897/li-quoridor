@@ -13,7 +13,7 @@ const App = ({ socketConnected, socketDisconnected }) => {
 			<div className="App">
 				<Routes>
 					<Route path="/" element={<FreeBoard />} />
-					<Route path="/play" element={<Play />} />
+					<Route path="/play" element={<FreeBoard />} />
 					<Route path="/how-to-play" element={<HowToPlay />} />
 					<Route path="/freeboard" element={<FreeBoard />} />
 				</Routes>
